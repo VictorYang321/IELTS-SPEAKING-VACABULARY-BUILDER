@@ -3,14 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>雅思口语小助手 | Cosmic Voice Edition</title>
+    <title>雅思口语小助手 | Cosmic Zenith</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         :root {
             --bg-deep-space: #020306;
-            --nebula-purple: rgba(139, 92, 246, 0.12);
-            --nebula-cyan: rgba(6, 182, 212, 0.12);
             --starlight: #e2e8f0;
             --starlight-dim: #94a3b8;
             --accent-glow: #06b6d4;
@@ -22,38 +20,48 @@
         }
 
         body {
-            font-family: 'Inter', sans-serif;
+            font-family: 'Inter', -apple-system, sans-serif;
             background-color: var(--bg-deep-space);
-            background-image: 
-                radial-gradient(circle at 10% 30%, var(--nebula-purple), transparent 50%),
-                radial-gradient(circle at 90% 70%, var(--nebula-cyan), transparent 50%);
             color: var(--starlight);
             margin: 0; display: flex; height: 100vh; overflow: hidden;
         }
 
-        /* 沉浸式星空与巨型暗星背景 */
+        /* 1. 氛围层：银河星尘带 */
+        .galaxy-dust {
+            position: fixed; inset: 0; z-index: -3;
+            background: linear-gradient(135deg, transparent 25%, rgba(139, 92, 246, 0.08) 45%, rgba(6, 182, 212, 0.06) 55%, transparent 75%);
+            filter: blur(40px);
+            opacity: 0.8;
+            pointer-events: none;
+        }
+
+        /* 2. 氛围层：深空繁星 (更明显的星空感) */
         .stars-bg {
             position: fixed; inset: 0; z-index: -2;
             background-image: 
-                radial-gradient(1px 1px at 20px 30px, #fff, rgba(0,0,0,0)),
-                radial-gradient(1.5px 1.5px at 150px 160px, rgba(255,255,255,0.8), rgba(0,0,0,0)),
-                radial-gradient(1px 1px at 90px 40px, #fff, rgba(0,0,0,0)),
-                radial-gradient(2px 2px at 230px 280px, rgba(255,255,255,0.5), rgba(0,0,0,0));
-            background-repeat: repeat; background-size: 250px 250px; opacity: 0.25;
-            animation: twinkle 20s linear infinite alternate;
+                radial-gradient(1.5px 1.5px at 40px 60px, rgba(255,255,255,0.8), rgba(0,0,0,0)),
+                radial-gradient(2px 2px at 150px 260px, rgba(255,255,255,0.6), rgba(0,0,0,0)),
+                radial-gradient(1px 1px at 290px 140px, #fff, rgba(0,0,0,0)),
+                radial-gradient(2.5px 2.5px at 430px 380px, rgba(139, 92, 246, 0.5), rgba(0,0,0,0)),
+                radial-gradient(1.5px 1.5px at 600px 80px, rgba(6, 182, 212, 0.6), rgba(0,0,0,0));
+            background-repeat: repeat; background-size: 350px 350px; opacity: 0.4;
+            animation: twinkle 12s ease-in-out infinite alternate;
+            pointer-events: none;
         }
+        @keyframes twinkle { 0% { opacity: 0.2; transform: scale(1); } 100% { opacity: 0.6; transform: scale(1.02); } }
+
+        /* 3. 氛围层：右下角的暗星引力场 */
         .planet-bg {
-            position: fixed; right: -15vw; bottom: -20vh; width: 60vw; height: 60vw;
+            position: fixed; right: -20vw; bottom: -25vh; width: 70vw; height: 70vw;
             border-radius: 50%; z-index: -1;
-            background: radial-gradient(circle at 30% 30%, rgba(255,255,255,0.02), rgba(0,0,0,0) 60%);
-            box-shadow: inset 40px 40px 100px rgba(139, 92, 246, 0.03), inset -50px -50px 120px rgba(0,0,0,0.8);
-            opacity: 0.8;
+            background: radial-gradient(circle at 30% 30%, rgba(255,255,255,0.01), rgba(0,0,0,0) 60%);
+            box-shadow: inset 50px 50px 120px rgba(139, 92, 246, 0.04), inset -60px -60px 150px rgba(0,0,0,0.9);
+            pointer-events: none;
         }
-        @keyframes twinkle { 0% { opacity: 0.1; } 100% { opacity: 0.3; } }
 
         /* --- 侧边栏 --- */
         .sidebar {
-            width: 320px; background: rgba(2, 3, 6, 0.75); backdrop-filter: blur(15px);
+            width: 320px; background: rgba(2, 3, 6, 0.6); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
             border-right: 1px solid var(--border-glass); display: flex; flex-direction: column;
             padding: 40px 30px; box-sizing: border-box; z-index: 10;
         }
@@ -95,50 +103,67 @@
         
         .content-wrapper { max-width: 800px; width: 100%; display: flex; flex-direction: column; align-items: center; margin-top: auto; margin-bottom: auto; }
 
-        /* 3D 星球容器 (完美居中) */
-        .sphere-container { width: 100%; height: 260px; display: flex; justify-content: center; align-items: center; margin-bottom: 20px; perspective: 1000px; transition: opacity 0.5s; }
-        #sphere-cloud { width: 240px; height: 240px; position: relative; transform-style: preserve-3d; }
-        .sphere-tag { position: absolute; left: 50%; top: 50%; color: var(--accent-glow); font-weight: 600; font-size: 14px; cursor: pointer; transition: color 0.3s; transform-style: preserve-3d; white-space: nowrap; text-shadow: 0 0 10px rgba(6,182,212,0.4); }
-        .sphere-tag:hover { color: #fff; text-shadow: 0 0 20px #fff; font-size: 16px; z-index: 100; }
+        /* 3D 星球容器 - 调整了间距 */
+        .sphere-container { width: 100%; height: 240px; display: flex; justify-content: center; align-items: center; margin-bottom: 50px; perspective: 1000px; transition: opacity 0.5s; }
+        #sphere-cloud { width: 220px; height: 220px; position: relative; transform-style: preserve-3d; }
+        .sphere-tag { position: absolute; left: 50%; top: 50%; color: var(--accent-glow); font-weight: 600; font-size: 14px; cursor: pointer; transition: all 0.3s; transform-style: preserve-3d; white-space: nowrap; text-shadow: 0 0 10px rgba(6,182,212,0.4); }
+        .sphere-tag:hover { color: #fff; text-shadow: 0 0 20px #fff; font-size: 17px; z-index: 100; }
 
         .practice-area { width: 100%; z-index: 5; }
 
-        .chinese-prompt { font-size: 24px; font-weight: 300; line-height: 1.6; margin-bottom: 30px; color: #fff; text-align: center; }
+        /* 重塑中文题目的排版：电影字幕级的呼吸感 */
+        .chinese-prompt { 
+            font-size: 25px; 
+            font-weight: 300; 
+            line-height: 1.85; 
+            letter-spacing: 2px;
+            margin-bottom: 45px; 
+            color: #fff; 
+            text-align: center;
+            text-shadow: 0 2px 15px rgba(255,255,255,0.15);
+            padding: 0 20px;
+        }
 
         /* 输入模式切换 Tabs */
-        .input-tabs { display: flex; justify-content: center; gap: 15px; margin-bottom: 20px; }
+        .input-tabs { display: flex; justify-content: center; gap: 15px; margin-bottom: 25px; }
         .tab-btn { background: transparent; border: 1px solid var(--border-glass); color: var(--starlight-dim); padding: 8px 20px; border-radius: 20px; font-size: 13px; cursor: pointer; transition: 0.3s; }
         .tab-btn.active { background: rgba(255,255,255,0.05); border-color: var(--accent-purple); color: #fff; box-shadow: 0 0 10px rgba(139,92,246,0.2); }
 
-        textarea { width: 100%; height: 120px; background: rgba(0,0,0,0.3); border: 1px solid var(--border-glass); border-radius: 12px; color: #fff; font-size: 17px; padding: 20px; resize: none; box-sizing: border-box; box-shadow: inset 0 5px 15px rgba(0,0,0,0.5); transition: 0.3s; }
-        textarea:focus { outline: none; border-color: var(--accent-glow); box-shadow: inset 0 5px 15px rgba(0,0,0,0.5), 0 0 15px rgba(6,182,212,0.15); }
+        /* 输入框的呼吸感 */
+        textarea { 
+            width: 100%; height: 130px; background: rgba(0,0,0,0.3); border: 1px solid var(--border-glass); 
+            border-radius: 12px; color: #fff; font-size: 17px; padding: 25px; resize: none; box-sizing: border-box; 
+            box-shadow: inset 0 5px 15px rgba(0,0,0,0.4); transition: 0.3s; 
+            line-height: 1.6; letter-spacing: 0.5px;
+        }
+        textarea:focus { outline: none; border-color: var(--accent-glow); box-shadow: inset 0 5px 15px rgba(0,0,0,0.4), 0 0 15px rgba(6,182,212,0.15); }
 
         /* 语音输入区 */
-        .voice-area { width: 100%; height: 120px; background: rgba(0,0,0,0.2); border: 1px dashed var(--border-glass); border-radius: 12px; display: flex; flex-direction: column; justify-content: center; align-items: center; margin-bottom: 25px; }
+        .voice-area { width: 100%; height: 130px; background: rgba(0,0,0,0.2); border: 1px dashed var(--border-glass); border-radius: 12px; display: flex; flex-direction: column; justify-content: center; align-items: center; margin-bottom: 25px; }
         .btn-record { background: rgba(255,255,255,0.05); border: 1px solid var(--starlight-dim); color: #fff; padding: 12px 30px; border-radius: 30px; font-size: 15px; cursor: pointer; transition: 0.3s; display: flex; align-items: center; gap: 10px; }
         .btn-record:hover { background: rgba(255,255,255,0.1); }
         .btn-record.recording { background: rgba(239, 68, 68, 0.15); border-color: var(--danger); color: var(--danger); box-shadow: 0 0 15px rgba(239, 68, 68, 0.3); animation: pulse 1.5s infinite; }
         @keyframes pulse { 0% { box-shadow: 0 0 0 0 rgba(239,68,68,0.4); } 70% { box-shadow: 0 0 0 10px rgba(239,68,68,0); } 100% { box-shadow: 0 0 0 0 rgba(239,68,68,0); } }
 
-        .btn-main { background: #fff; color: #000; border: none; padding: 15px 45px; border-radius: 30px; font-size: 15px; font-weight: 700; cursor: pointer; display: block; margin: 25px auto 0 auto; box-shadow: 0 0 20px rgba(255,255,255,0.15); transition: 0.3s; }
+        .btn-main { background: #fff; color: #000; border: none; padding: 16px 50px; border-radius: 30px; font-size: 15px; font-weight: 700; cursor: pointer; display: block; margin: 30px auto 0 auto; box-shadow: 0 0 20px rgba(255,255,255,0.15); transition: 0.3s; letter-spacing: 1px; }
         .btn-main:hover { transform: scale(1.05); box-shadow: 0 0 30px rgba(255,255,255,0.3); }
 
         /* 解析区 */
-        .analysis-view { display: none; margin-top: 20px; width: 100%; animation: slideUp 0.5s ease; }
-        @keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+        .analysis-view { display: none; margin-top: 20px; width: 100%; animation: slideUp 0.6s cubic-bezier(0.16, 1, 0.3, 1); }
+        @keyframes slideUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
 
-        .ref-card { background: var(--card-glass); backdrop-filter: blur(20px); border: 1px solid var(--border-glass); padding: 50px; border-radius: 20px; position: relative; box-shadow: 0 20px 50px rgba(0,0,0,0.4); }
+        .ref-card { background: var(--card-glass); backdrop-filter: blur(25px); -webkit-backdrop-filter: blur(25px); border: 1px solid var(--border-glass); padding: 50px; border-radius: 20px; position: relative; box-shadow: 0 20px 50px rgba(0,0,0,0.5); }
 
         /* 录音回放区 */
-        .playback-zone { background: rgba(255,255,255,0.03); border-radius: 12px; padding: 15px; margin-bottom: 30px; border: 1px solid var(--border-glass); display: flex; align-items: center; gap: 15px; }
+        .playback-zone { background: rgba(255,255,255,0.03); border-radius: 12px; padding: 15px 20px; margin-bottom: 35px; border: 1px solid var(--border-glass); display: flex; align-items: center; gap: 15px; }
         .playback-zone audio { flex-grow: 1; height: 35px; outline: none; }
 
-        .ref-label { font-size: 11px; color: var(--accent-purple); letter-spacing: 3px; margin-bottom: 20px; font-weight: bold; display: block; }
-        .english-text { font-family: 'Libre Baskerville', serif; font-size: 26px; line-height: 1.6; color: #fff; margin-bottom: 35px; font-style: italic; }
-        .target-tags { font-size: 14px; color: var(--accent-glow); background: rgba(6,182,212,0.08); border-left: 3px solid var(--accent-glow); padding: 15px 20px; border-radius: 0 8px 8px 0; margin-bottom: 30px; }
+        .ref-label { font-size: 11px; color: var(--accent-purple); letter-spacing: 3px; margin-bottom: 25px; font-weight: bold; display: block; }
+        .english-text { font-family: 'Libre Baskerville', serif; font-size: 26px; line-height: 1.65; color: #fff; margin-bottom: 40px; font-style: italic; }
+        .target-tags { font-size: 14px; color: var(--accent-glow); background: rgba(6,182,212,0.05); border-left: 3px solid var(--accent-glow); padding: 15px 20px; border-radius: 0 8px 8px 0; margin-bottom: 30px; letter-spacing: 0.5px;}
 
         .insight-list { list-style: none; padding: 0; }
-        .insight-list li { font-size: 15px; color: var(--starlight); margin-bottom: 15px; line-height: 1.6; padding-left: 20px; position: relative; }
+        .insight-list li { font-size: 15px; color: var(--starlight); margin-bottom: 18px; line-height: 1.6; padding-left: 20px; position: relative; }
         .insight-list li::before { content: '»'; position: absolute; left: 0; color: var(--accent-glow); font-size: 18px; top: -2px; }
         .insight-list li b { color: #fbbf24; font-weight: bold; } 
 
@@ -146,14 +171,14 @@
         .favorite-btn:hover { color: #fff; transform: scale(1.1); }
         .favorite-btn.active { color: #fbbf24; text-shadow: 0 0 20px rgba(251,191,36,0.6); }
 
-        .tool-bar { display: flex; gap: 30px; margin-top: 30px; border-top: 1px solid var(--border-glass); padding-top: 25px; }
+        .tool-bar { display: flex; gap: 30px; margin-top: 35px; border-top: 1px solid var(--border-glass); padding-top: 25px; }
         .tool-link { color: var(--starlight-dim); font-size: 13px; text-decoration: none; cursor: pointer; transition: 0.2s; }
         .tool-link:hover { color: #fff; }
 
-        .btn-next { background: transparent; border: 1px solid var(--accent-glow); color: var(--accent-glow); padding: 14px 40px; border-radius: 30px; cursor: pointer; margin-top: 30px; float: right; font-weight: bold; transition: 0.3s; }
+        .btn-next { background: transparent; border: 1px solid var(--accent-glow); color: var(--accent-glow); padding: 14px 40px; border-radius: 30px; cursor: pointer; margin-top: 35px; float: right; font-weight: bold; transition: 0.3s; letter-spacing: 1px;}
         .btn-next:hover { background: var(--accent-glow); color: #000; box-shadow: 0 0 20px rgba(6,182,212,0.3); }
 
-        /* 划线工具与弹窗保持不变... */
+        /* 划线工具与弹窗 */
         #highlight-tooltip { display: none; position: absolute; z-index: 1000; background: #fff; color: #000; padding: 10px 20px; border-radius: 8px; font-size: 13px; font-weight: bold; cursor: pointer; box-shadow: 0 10px 25px rgba(0,0,0,0.5); transform: translate(-50%, -100%); margin-top: -10px; }
         #highlight-tooltip::after { content: ''; position: absolute; bottom: -8px; left: 50%; transform: translateX(-50%); border-width: 8px 8px 0; border-style: solid; border-color: #fff transparent transparent transparent; }
         .modal-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.85); backdrop-filter: blur(5px); z-index: 2000; justify-content: center; align-items: center; }
@@ -161,14 +186,14 @@
         .modal-header { padding: 25px; border-bottom: 1px solid var(--border-glass); display: flex; justify-content: space-between; align-items: center; }
         .modal-header h3 { margin: 0; color: #fff; font-size: 16px; }
         .modal-body { padding: 30px; }
-        .selected-text-quote { border-left: 4px solid var(--accent-purple); padding-left: 15px; margin-bottom: 20px; color: #fff; font-style: italic; font-size: 15px; }
-        #note-input { width: 100%; height: 100px; background: rgba(255,255,255,0.03); border: 1px solid var(--border-glass); border-radius: 8px; color: #fff; padding: 15px; font-size: 14px; resize: none; margin-bottom: 20px; box-sizing: border-box; }
+        .selected-text-quote { border-left: 4px solid var(--accent-purple); padding-left: 15px; margin-bottom: 20px; color: #fff; font-style: italic; font-size: 15px; line-height: 1.5; }
+        #note-input { width: 100%; height: 100px; background: rgba(255,255,255,0.03); border: 1px solid var(--border-glass); border-radius: 8px; color: #fff; padding: 15px; font-size: 14px; resize: none; margin-bottom: 20px; box-sizing: border-box; line-height: 1.5; }
         .btn-save-note { background: var(--accent-purple); color: #fff; border: none; padding: 12px 25px; border-radius: 6px; font-weight: bold; cursor: pointer; float: right; }
         #library-modal .modal-content { max-width: 800px; max-height: 85vh; display: flex; flex-direction: column; }
         #library-modal .modal-body { overflow-y: auto; }
-        .highlight-item { background: rgba(255,255,255,0.02); border: 1px solid var(--border-glass); padding: 20px; border-radius: 10px; margin-bottom: 20px; position: relative; }
-        .highlight-text { font-family: 'Libre Baskerville', serif; font-size: 18px; color: #fff; margin-bottom: 15px; }
-        .highlight-note { background: rgba(139,92,246,0.1); border-radius: 6px; padding: 12px; font-size: 13px; color: var(--starlight); }
+        .highlight-item { background: rgba(255,255,255,0.02); border: 1px solid var(--border-glass); padding: 25px; border-radius: 12px; margin-bottom: 20px; position: relative; }
+        .highlight-text { font-family: 'Libre Baskerville', serif; font-size: 18px; color: #fff; margin-bottom: 15px; line-height: 1.6; }
+        .highlight-note { background: rgba(139,92,246,0.1); border-radius: 8px; padding: 15px; font-size: 14px; color: var(--starlight); line-height: 1.5; }
         .delete-hl { position: absolute; top: 20px; right: 20px; background: none; border: none; color: #ef4444; font-size: 15px; cursor: pointer; opacity: 0.5; }
         .delete-hl:hover { opacity: 1; }
         .loader { position: fixed; inset: 0; background: #000; display: flex; justify-content: center; align-items: center; z-index: 3000; color: #fff; font-size: 13px; }
@@ -176,8 +201,11 @@
 </head>
 <body>
 
+<div class="galaxy-dust"></div>
 <div class="stars-bg"></div>
-<div class="planet-bg"></div> <div id="loader" class="loader">
+<div class="planet-bg"></div>
+
+<div id="loader" class="loader">
     <div style="text-align:center;">
         <i class="fas fa-satellite fa-spin fa-2x" style="color:var(--accent-glow); margin-bottom:20px;"></i>
         <div>CALIBRATING COSMIC DATABASE...</div>
@@ -204,7 +232,7 @@
         </div>
         
         <button class="btn-random-big" onclick="pickRandom()">
-            <i class="fas fa-dice-d20"></i> 随机抽题
+            <i class="fas fa-dice-d20"></i> 随机抽题挑战
         </button>
     </div>
 
@@ -252,7 +280,7 @@
                     <button class="btn-record" id="record-btn" onclick="toggleRecording()">
                         <i class="fas fa-microphone"></i> <span>点击开始录音</span>
                     </button>
-                    <div style="font-size:12px; color:var(--starlight-dim); margin-top:15px;" id="record-status">请允许浏览器使用麦克风</div>
+                    <div style="font-size:12px; color:var(--starlight-dim); margin-top:15px;" id="record-status">请允许浏览器使用麦克风权限以进行口语练习</div>
                 </div>
             </div>
 
@@ -263,7 +291,7 @@
                     <div class="favorite-btn" id="fav-star" onclick="toggleFavorite()"><i class="fas fa-star"></i></div>
                     
                     <div class="playback-zone" id="playback-zone" style="display:none;">
-                        <span style="font-size:12px; color:var(--starlight-dim);"><i class="fas fa-headphones"></i> 你的作答:</span>
+                        <span style="font-size:12px; color:var(--starlight-dim); font-weight:bold; letter-spacing:1px;"><i class="fas fa-headphones"></i> 你的作答录音:</span>
                         <audio id="audio-player" controls></audio>
                     </div>
 
@@ -276,7 +304,7 @@
                         <span class="tool-link" onclick="speak('UK')"><i class="fas fa-volume-up"></i> 英音示范</span>
                         <span class="tool-link" onclick="speak('US')"><i class="fas fa-volume-up"></i> 美音示范</span>
                         <span class="tool-link" onclick="copyText()"><i class="far fa-copy"></i> 复制</span>
-                        <span style="flex-grow:1; text-align:right; font-size:11px; color:var(--starlight-dim);">*鼠标选中任意英文即可划线收藏</span>
+                        <span style="flex-grow:1; text-align:right; font-size:11px; color:var(--starlight-dim); letter-spacing:0.5px;">*鼠标选中任意英文即可划线收藏</span>
                     </div>
                 </div>
                 <button class="btn-next" onclick="nextQuestion()">下一题 ➔</button>
@@ -286,7 +314,7 @@
 </div>
 
 <div id="highlight-tooltip" onclick="openNoteModal()"><i class="fas fa-pen-nib"></i> 划线记笔记</div>
-<div class="modal-overlay" id="note-modal"><div class="modal-content"><div class="modal-header"><h3><i class="fas fa-edit" style="color:var(--accent-purple)"></i> 添加语料笔记</h3><button class="close-modal" onclick="closeModal('note-modal')" style="background:none;border:none;color:#fff;cursor:pointer;"><i class="fas fa-times"></i></button></div><div class="modal-body"><div class="selected-text-quote" id="quote-text"></div><textarea id="note-input" placeholder="写下你的灵感..."></textarea><button class="btn-save-note" onclick="saveHighlightAndNote()">保存</button><div style="clear:both;"></div></div></div></div>
+<div class="modal-overlay" id="note-modal"><div class="modal-content"><div class="modal-header"><h3><i class="fas fa-edit" style="color:var(--accent-purple)"></i> 添加语料笔记</h3><button class="close-modal" onclick="closeModal('note-modal')" style="background:none;border:none;color:#fff;cursor:pointer;"><i class="fas fa-times"></i></button></div><div class="modal-body"><div class="selected-text-quote" id="quote-text"></div><textarea id="note-input" placeholder="写下你的灵感..."></textarea><button class="btn-save-note" onclick="saveHighlightAndNote()">保存收录</button><div style="clear:both;"></div></div></div></div>
 <div class="modal-overlay" id="library-modal"><div class="modal-content"><div class="modal-header"><h3><i class="fas fa-book-open" style="color:var(--accent-glow)"></i> 我的私人语料库</h3><button class="close-modal" onclick="closeModal('library-modal')" style="background:none;border:none;color:#fff;cursor:pointer;"><i class="fas fa-times"></i></button></div><div class="modal-body" id="library-list"></div></div></div>
 
 <script>
@@ -353,7 +381,7 @@
             container.appendChild(el);
         });
         function animate() {
-            sphereX -= 0.004; sphereY += 0.002;
+            sphereX -= 0.003; sphereY += 0.002;
             const sinX = Math.sin(sphereX), cosX = Math.cos(sphereX), sinY = Math.sin(sphereY), cosY = Math.cos(sphereY);
             Array.from(container.children).forEach(el => {
                 let x = parseFloat(el.dataset.x), y = parseFloat(el.dataset.y), z = parseFloat(el.dataset.z);
@@ -385,7 +413,7 @@
             mediaRecorder.stop();
             btn.classList.remove('recording');
             btn.innerHTML = '<i class="fas fa-redo"></i> <span>重新录音</span>';
-            status.innerText = "录音已完成，点击下方按钮看答案";
+            status.innerText = "录音已完成，点击下方按钮看解析";
             isRecording = false;
         } else {
             try {
@@ -400,7 +428,7 @@
                 mediaRecorder.start();
                 btn.classList.add('recording');
                 btn.innerHTML = '<i class="fas fa-stop"></i> <span>点击结束录音</span>';
-                status.innerText = "录音中...";
+                status.innerText = "正在录音，请大胆开口说...";
                 isRecording = true;
             } catch (err) {
                 alert("无法访问麦克风，请在浏览器地址栏左侧允许权限。");
@@ -467,7 +495,7 @@
         audioBlob = null; 
         document.getElementById('record-btn').innerHTML = '<i class="fas fa-microphone"></i> <span>点击开始录音</span>';
         document.getElementById('record-btn').classList.remove('recording');
-        document.getElementById('record-status').innerText = "请允许浏览器使用麦克风";
+        document.getElementById('record-status').innerText = "请允许浏览器使用麦克风权限以进行口语练习";
         document.getElementById("playback-zone").style.display = "none";
 
         if(reviewMode) {
