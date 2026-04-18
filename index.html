@@ -1,1 +1,334 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>雅思口语回译练习 | 核心词汇与语法质感提升</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background-color: #f4f7f6;
+            color: #333;
+            line-height: 1.6;
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+        }
+        .container {
+            max-width: 600px;
+            width: 100%;
+            background: #fff;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.05);
+        }
+        .header {
+            text-align: center;
+            margin-bottom: 25px;
+        }
+        .header h1 {
+            font-size: 24px;
+            color: #2c3e50;
+            margin-bottom: 5px;
+        }
+        .header p {
+            color: #7f8c8d;
+            font-size: 14px;
+            margin-bottom: 20px;
+        }
+        .controls {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid #eee;
+        }
+        select {
+            padding: 8px 12px;
+            border-radius: 6px;
+            border: 1px solid #ccc;
+            font-size: 14px;
+            outline: none;
+            background: #fdfdfd;
+        }
+        .progress {
+            font-size: 14px;
+            color: #7f8c8d;
+            font-weight: bold;
+        }
+        .badge {
+            display: inline-block;
+            background: #e1f5fe;
+            color: #0288d1;
+            padding: 4px 10px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: bold;
+            margin-bottom: 15px;
+        }
+        .question-box {
+            margin-bottom: 25px;
+        }
+        .chinese-sentence {
+            font-size: 20px;
+            font-weight: bold;
+            color: #2c3e50;
+            margin-bottom: 10px;
+        }
+        .focus-points {
+            font-size: 14px;
+            color: #e67e22;
+            background: #fff3e0;
+            padding: 10px 15px;
+            border-radius: 6px;
+            border-left: 4px solid #f39c12;
+            margin-bottom: 20px;
+        }
+        textarea {
+            width: 100%;
+            height: 100px;
+            padding: 12px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 16px;
+            font-family: inherit;
+            resize: none;
+            box-sizing: border-box;
+            transition: border-color 0.3s;
+        }
+        textarea:focus {
+            outline: none;
+            border-color: #3498db;
+        }
+        .btn {
+            display: block;
+            width: 100%;
+            padding: 14px;
+            background: #3498db;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            margin-top: 15px;
+            transition: background 0.3s;
+        }
+        .btn:hover {
+            background: #2980b9;
+        }
+        .btn-next {
+            background: #2ecc71;
+            margin-top: 20px;
+        }
+        .btn-next:hover {
+            background: #27ae60;
+        }
+        .answer-section {
+            display: none;
+            margin-top: 25px;
+            padding-top: 20px;
+            border-top: 2px dashed #eee;
+        }
+        .english-reference {
+            font-size: 18px;
+            font-weight: bold;
+            color: #27ae60;
+            background: #eafaf1;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+        .learning-points h3 {
+            font-size: 16px;
+            color: #2c3e50;
+            margin-bottom: 10px;
+        }
+        .learning-points ul {
+            padding-left: 20px;
+            margin: 0;
+            color: #555;
+            font-size: 15px;
+        }
+        .learning-points li {
+            margin-bottom: 10px;
+        }
+        .loading {
+            text-align: center;
+            padding: 50px;
+            color: #7f8c8d;
+        }
+    </style>
+</head>
+<body>
 
+<div class="container" id="app">
+    <div class="header">
+        <h1>雅思口语回译练习</h1>
+        <p>跟读百句，重塑语感</p>
+    </div>
+
+    <div class="loading" id="loading">正在加载语料库，请稍候...</div>
+
+    <div id="main-content" style="display: none;">
+        <div class="controls">
+            <select id="topic-selector" onchange="changeTopic()">
+                <option value="all">全部话题混合练习</option>
+            </select>
+            <div class="progress" id="progress">0 / 0</div>
+        </div>
+
+        <div class="question-box">
+            <div class="badge" id="topic-badge">话题</div>
+            <div class="chinese-sentence" id="cn-sentence"></div>
+            <div class="focus-points" id="focus-points"></div>
+            
+            <textarea id="user-input" placeholder="请在这里试着输入你的英文翻译..."></textarea>
+            
+            <button class="btn" id="check-btn" onclick="showAnswer()">查看解析与地道表达</button>
+        </div>
+
+        <div class="answer-section" id="answer-section">
+            <div class="english-reference" id="en-reference"></div>
+            <div class="learning-points">
+                <h3>📝 老师解析：</h3>
+                <ul id="points-list"></ul>
+            </div>
+            <button class="btn btn-next" onclick="nextQuestion()">下一题 ➔</button>
+        </div>
+    </div>
+</div>
+
+<script>
+    // 你的 11 个语料文件名
+    const files = [
+        'media_sentences.md', 'tech_sentences.md', 'life_sentences.md',
+        'work_sentences.md', 'education_sentences.md', 'travel_sentences.md',
+        'food_sentences.md', 'transport_sentences.md', 'health_sentences.md',
+        'environment_sentences.md', 'government_sentences.md'
+    ];
+
+    let allQuestions = [];
+    let currentQuestions = [];
+    let currentIndex = 0;
+
+    // 解析 Markdown 文件的核心函数
+    async function loadData() {
+        for (const file of files) {
+            try {
+                const response = await fetch(file);
+                if (!response.ok) continue;
+                const text = await response.text();
+                
+                // 按题目区块分割
+                const blocks = text.split(/##\s+[a-zA-Z0-9_]+/);
+                for (let i = 1; i < blocks.length; i++) {
+                    const block = blocks[i];
+                    if (block.includes('使用的表达覆盖')) continue; // 跳过末尾的总结
+
+                    try {
+                        const cn = block.match(/\*\*中文\*\*\s*([\s\S]*?)\*\*话题\*\*/)[1].trim();
+                        const topic = block.match(/\*\*话题\*\*\s*[:：]\s*(.*?)\s*\*\*练习重点\*\*/)[1].trim();
+                        const focus = block.match(/\*\*练习重点\*\*\s*[:：]\s*([\s\S]*?)\*\*英文参考\(口语\)\*\*/)[1].trim();
+                        const en = block.match(/\*\*英文参考\(口语\)\*\*\s*([\s\S]*?)\*\*学习要点\*\*/)[1].trim();
+                        
+                        const pointsRaw = block.split(/\*\*学习要点\*\*/)[1].split('---')[0].trim();
+                        const points = pointsRaw.split(/\n/)
+                                        .filter(line => line.trim().match(/^\d+\./))
+                                        .map(line => line.replace(/^\d+\.\s*/, '').trim());
+
+                        allQuestions.push({ cn, topic, focus, en, points });
+                    } catch (e) {
+                        console.warn("跳过无法解析的区块:", e);
+                    }
+                }
+            } catch(e) {
+                console.error("无法加载文件", file);
+            }
+        }
+        
+        initApp();
+    }
+
+    // 初始化应用
+    function initApp() {
+        if (allQuestions.length === 0) {
+            document.getElementById('loading').innerText = "未找到题目，请确保材料文件已上传到同一个目录下。";
+            return;
+        }
+
+        // 提取所有唯一的话题用于下拉菜单
+        const topics = [...new Set(allQuestions.map(q => q.topic))];
+        const selector = document.getElementById('topic-selector');
+        topics.forEach(topic => {
+            const option = document.createElement('option');
+            option.value = topic;
+            option.innerText = topic + " (" + allQuestions.filter(q => q.topic === topic).length + "题)";
+            selector.appendChild(option);
+        });
+
+        document.getElementById('loading').style.display = "none";
+        document.getElementById('main-content').style.display = "block";
+        
+        changeTopic(); // 加载第一题
+    }
+
+    // 切换话题
+    function changeTopic() {
+        const selectedTopic = document.getElementById('topic-selector').value;
+        if (selectedTopic === 'all') {
+            currentQuestions = [...allQuestions].sort(() => Math.random() - 0.5); // 全部混合时打乱顺序
+        } else {
+            currentQuestions = allQuestions.filter(q => q.topic === selectedTopic);
+        }
+        currentIndex = 0;
+        renderQuestion();
+    }
+
+    // 渲染题目
+    function renderQuestion() {
+        const q = currentQuestions[currentIndex];
+        document.getElementById('progress').innerText = (currentIndex + 1) + " / " + currentQuestions.length;
+        document.getElementById("topic-badge").innerText = q.topic;
+        document.getElementById("cn-sentence").innerText = q.cn;
+        document.getElementById("focus-points").innerHTML = "🎯 <b>练习重点：</b>" + q.focus;
+        document.getElementById("en-reference").innerText = q.en;
+        
+        const pointsList = document.getElementById("points-list");
+        pointsList.innerHTML = "";
+        q.points.forEach(point => {
+            const li = document.createElement("li");
+            // 将双下划线或加粗的部分也渲染成加粗效果
+            li.innerHTML = point.replace(/\*\*(.*?)\*\*/g, '<b>$1</b>');
+            pointsList.appendChild(li);
+        });
+
+        document.getElementById("user-input").value = "";
+        document.getElementById("answer-section").style.display = "none";
+        document.getElementById("check-btn").style.display = "block";
+    }
+
+    // 显示答案
+    function showAnswer() {
+        document.getElementById("answer-section").style.display = "block";
+        document.getElementById("check-btn").style.display = "none";
+    }
+
+    // 下一题
+    function nextQuestion() {
+        currentIndex++;
+        if (currentIndex >= currentQuestions.length) {
+            alert("太棒了！你已经完成了该分类下的所有练习！");
+            currentIndex = 0; 
+        }
+        renderQuestion();
+    }
+
+    // 启动加载
+    window.onload = loadData;
+</script>
+
+</body>
+</html>
