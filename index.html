@@ -3,115 +3,167 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>IELTS Speaking Vocabulary Builder | Tech Edition</title>
+    <title>雅思口语小助手 | Geek Edition</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         :root {
-            --bg-color: #0f172a;
-            --card-bg: #1e293b;
-            --accent-color: #38bdf8;
-            --text-primary: #f8fafc;
-            --text-secondary: #94a3b8;
-            --success-color: #22c55e;
-            --border-glow: rgba(56, 189, 248, 0.2);
+            /* 极客风配色方案 */
+            --sidebar-bg: #09090b;
+            --main-bg: #18181b;
+            --accent: #06b6d4; /* 赛博青 */
+            --accent-glow: rgba(6, 182, 212, 0.4);
+            --success: #10b981;
+            --text-main: #f4f4f5;
+            --text-dim: #a1a1aa;
+            --panel-border: rgba(255, 255, 255, 0.08);
+            --glass: rgba(255, 255, 255, 0.03);
         }
 
         body {
-            font-family: 'Inter', -apple-system, system-ui, sans-serif;
-            background-color: var(--bg-color);
-            color: var(--text-primary);
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background-color: var(--main-bg);
+            color: var(--text-main);
             margin: 0;
-            padding: 20px;
             display: flex;
-            justify-content: center;
-            min-height: 100vh;
+            height: 100vh;
+            overflow: hidden;
         }
 
-        .container {
-            max-width: 700px;
-            width: 100%;
-            background: var(--card-bg);
-            padding: 40px;
-            border-radius: 16px;
-            box-shadow: 0 0 30px rgba(0, 0, 0, 0.5), 0 0 1px 1px var(--border-glow);
-            border: 1px solid rgba(255, 255, 255, 0.05);
+        /* --- 左侧侧边栏 (控制台) --- */
+        .sidebar {
+            width: 300px;
+            background: var(--sidebar-bg);
+            border-right: 1px solid var(--panel-border);
+            display: flex;
+            flex-direction: column;
+            padding: 35px 25px;
+            box-sizing: border-box;
+            z-index: 10;
         }
 
-        .header {
-            text-align: center;
-            margin-bottom: 40px;
-        }
-
-        .header h1 {
-            font-size: 28px;
-            letter-spacing: -0.5px;
-            color: var(--accent-color);
-            margin-bottom: 10px;
+        .brand h1 {
+            font-size: 20px;
+            margin: 0;
+            color: var(--accent);
+            letter-spacing: 1.5px;
             text-transform: uppercase;
+            text-shadow: 0 0 10px var(--accent-glow);
         }
 
-        .header p {
-            color: var(--text-secondary);
-            font-size: 14px;
+        .brand p {
+            font-size: 12px;
+            color: var(--text-dim);
+            margin: 8px 0 40px 0;
+            font-family: monospace;
+            letter-spacing: 0.5px;
         }
 
-        .controls {
-            display: flex;
-            gap: 15px;
-            align-items: center;
-            margin-bottom: 30px;
-            background: rgba(15, 23, 42, 0.5);
-            padding: 15px;
-            border-radius: 12px;
+        .nav-label {
+            font-size: 10px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            color: var(--text-dim);
+            margin-bottom: 12px;
         }
 
         select {
-            flex-grow: 1;
-            padding: 10px;
-            background: #334155;
-            border: 1px solid #475569;
+            width: 100%;
+            padding: 12px;
+            background: #27272a;
+            border: 1px solid var(--panel-border);
             color: white;
             border-radius: 6px;
             outline: none;
             cursor: pointer;
-        }
-
-        .progress {
-            font-family: 'Courier New', monospace;
-            color: var(--accent-color);
-            font-weight: bold;
-        }
-
-        .question-box {
             margin-bottom: 30px;
+            font-size: 14px;
         }
 
-        .badge {
-            background: rgba(56, 189, 248, 0.1);
-            color: var(--accent-color);
-            padding: 4px 12px;
-            border-radius: 20px;
-            font-size: 12px;
-            border: 1px solid var(--accent-color);
-            margin-bottom: 20px;
-            display: inline-block;
+        select:focus {
+            border-color: var(--accent);
         }
 
-        .chinese-sentence {
+        .btn-sidebar {
+            width: 100%;
+            text-align: left;
+            background: transparent;
+            border: 1px solid var(--panel-border);
+            color: var(--text-main);
+            padding: 12px 15px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: all 0.2s;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+        }
+
+        .btn-sidebar i {
+            color: var(--accent);
+            margin-right: 12px;
+            width: 16px;
+        }
+
+        .btn-sidebar:hover {
+            background: var(--glass);
+            border-color: var(--accent);
+            box-shadow: 0 0 15px var(--accent-glow);
+        }
+
+        /* --- 右侧主练习区 --- */
+        .main-stage {
+            flex-grow: 1;
+            background: radial-gradient(circle at center, #18181b 0%, #09090b 100%);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 50px 40px;
+            overflow-y: auto;
+        }
+
+        .content-container {
+            max-width: 760px;
+            width: 100%;
+        }
+
+        .stats-bar {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 30px;
+            font-family: monospace;
+            color: var(--accent);
+            font-size: 14px;
+            border-bottom: 1px dashed var(--panel-border);
+            padding-bottom: 10px;
+        }
+
+        .practice-card {
+            background: #18181b;
+            border: 1px solid var(--panel-border);
+            padding: 40px;
+            border-radius: 16px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.4);
+        }
+
+        .chinese-prompt {
             font-size: 22px;
-            font-weight: 600;
-            margin-bottom: 25px;
-            line-height: 1.4;
+            font-weight: 500;
+            line-height: 1.6;
+            margin-bottom: 30px;
+            color: var(--text-main);
         }
 
         textarea {
             width: 100%;
             height: 120px;
+            background: #09090b;
+            border: 1px solid var(--panel-border);
+            border-radius: 8px;
             padding: 15px;
-            background: #0f172a;
-            border: 1px solid #334155;
-            color: #fff;
-            border-radius: 10px;
-            font-size: 17px;
+            color: var(--accent);
+            font-size: 16px;
+            font-family: monospace;
             resize: none;
             box-sizing: border-box;
             transition: all 0.3s;
@@ -119,138 +171,195 @@
 
         textarea:focus {
             outline: none;
-            border-color: var(--accent-color);
-            box-shadow: 0 0 10px rgba(56, 189, 248, 0.2);
+            border-color: var(--accent);
+            box-shadow: inset 0 0 10px var(--accent-glow);
         }
 
-        .btn {
+        .btn-primary {
             width: 100%;
-            padding: 16px;
-            background: var(--accent-color);
-            color: #0f172a;
+            background: var(--accent);
+            color: #000;
             border: none;
+            padding: 15px;
             border-radius: 8px;
-            font-size: 16px;
+            font-size: 15px;
             font-weight: 700;
+            letter-spacing: 1px;
             cursor: pointer;
             margin-top: 20px;
-            transition: transform 0.2s, opacity 0.2s;
+            transition: 0.2s;
+            text-transform: uppercase;
         }
 
-        .btn:hover {
-            opacity: 0.9;
+        .btn-primary:hover {
+            box-shadow: 0 0 20px var(--accent-glow);
             transform: translateY(-1px);
         }
 
-        .answer-section {
+        /* --- 解析区域 --- */
+        .analytics {
             display: none;
-            margin-top: 35px;
-            animation: fadeIn 0.5s ease;
+            margin-top: 30px;
+            animation: fadeIn 0.4s ease-out;
         }
 
         @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
+            from { opacity: 0; transform: translateY(15px); }
             to { opacity: 1; transform: translateY(0); }
         }
 
-        /* 重点解析在点击后才出现 */
-        .revealed-focus {
-            font-size: 14px;
-            color: #fbbf24;
-            background: rgba(251, 191, 36, 0.1);
-            padding: 12px 15px;
-            border-radius: 8px;
-            border-left: 4px solid #fbbf24;
-            margin-bottom: 20px;
+        .ref-answer-box {
+            background: rgba(16, 185, 129, 0.05);
+            border: 1px solid rgba(16, 185, 129, 0.2);
+            padding: 25px;
+            border-radius: 12px;
+            margin-bottom: 30px;
+            position: relative;
         }
 
-        .english-reference {
-            font-size: 19px;
+        .ref-tools {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            display: flex;
+            gap: 10px;
+        }
+
+        .tool-btn {
+            background: #27272a;
+            border: 1px solid var(--panel-border);
+            color: var(--text-main);
+            padding: 5px 10px;
+            border-radius: 4px;
+            font-size: 12px;
+            cursor: pointer;
+            transition: 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .tool-btn:hover {
+            border-color: var(--accent);
+            color: var(--accent);
+        }
+
+        .english-text {
+            font-size: 20px;
             font-weight: 600;
-            color: var(--success-color);
-            background: rgba(34, 197, 94, 0.1);
-            padding: 20px;
-            border-radius: 10px;
+            color: var(--success);
+            line-height: 1.5;
+            margin-top: 15px;
+        }
+
+        .insight-section h5 {
+            color: var(--text-dim);
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin: 25px 0 15px 0;
+            display: flex;
+            align-items: center;
+        }
+
+        .insight-section h5 i {
+            color: var(--accent);
+            margin-right: 8px;
+        }
+
+        #revealed-focus {
+            font-size: 14px;
+            color: var(--accent);
+            background: rgba(6, 182, 212, 0.1);
+            padding: 12px 15px;
+            border-radius: 6px;
+            border-left: 3px solid var(--accent);
             margin-bottom: 25px;
-            border: 1px solid rgba(34, 197, 94, 0.2);
         }
 
-        .learning-points h3 {
-            font-size: 16px;
-            color: var(--accent-color);
-            margin-bottom: 15px;
-            display: flex;
-            align-items: center;
+        .insight-list { padding: 0; margin: 0; list-style: none; }
+
+        .insight-list li {
+            padding: 15px;
+            background: #18181b;
+            border: 1px solid var(--panel-border);
+            border-radius: 8px;
+            margin-bottom: 10px;
+            font-size: 14px;
+            color: var(--text-dim);
+            line-height: 1.5;
         }
 
-        .learning-points ul {
-            padding-left: 18px;
-            color: var(--text-secondary);
-        }
+        .insight-list li b { color: var(--text-main); }
 
-        .learning-points li {
-            margin-bottom: 12px;
-            font-size: 15px;
-        }
-
-        .btn-next {
-            background: transparent;
-            border: 2px solid var(--success-color);
-            color: var(--success-color);
-        }
-
-        .btn-next:hover {
-            background: var(--success-color);
-            color: white;
-        }
-
-        .loading-screen {
-            position: fixed;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background: var(--bg-color);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            z-index: 100;
-        }
+        .loader { position: fixed; inset: 0; background: var(--sidebar-bg); display: flex; flex-direction: column; justify-content: center; align-items: center; z-index: 999; color: var(--accent); font-family: monospace; }
     </style>
 </head>
 <body>
 
-<div id="loader" class="loading-screen">SYSTEM INITIALIZING...</div>
+<div id="loader" class="loader">
+    <i class="fas fa-terminal fa-2x" style="margin-bottom:15px"></i>
+    <div>INITIALIZING DATABASE...</div>
+</div>
 
-<div class="container" id="main-ui" style="display:none;">
-    <div class="header">
-        <h1>IELTS RE-TRANSLATION</h1>
-        <p>Refining Vocabulary & Grammatical Texture</p>
+<div class="sidebar">
+    <div class="brand">
+        <h1>雅思口语小助手</h1>
+        <p>> v1.0.0_geek_edition</p>
     </div>
 
-    <div class="controls">
+    <div style="flex-grow: 1;">
+        <div class="nav-label">MODULE_SELECT</div>
         <select id="topic-selector" onchange="changeTopic()">
-            <option value="all">ALL TOPICS</option>
+            <option value="all">ALL_TOPICS_MIXED</option>
         </select>
-        <div class="progress" id="progress">00 / 00</div>
+        
+        <div class="nav-label" style="margin-top:30px">SYSTEM_CONTROLS</div>
+        <button class="btn-sidebar" onclick="pickRandom()">
+            <i class="fas fa-dice"></i> 随机抽题 (Random)
+        </button>
+        <div style="height: 50px;"></div> 
     </div>
+</div>
 
-    <div class="question-box">
-        <div class="badge" id="topic-badge">TOPIC</div>
-        <div class="chinese-sentence" id="cn-sentence"></div>
-        
-        <textarea id="user-input" placeholder="Think, translate, then verify..."></textarea>
-        
-        <button class="btn" id="check-btn" onclick="showAnswer()">REVEAL ANALYTICS</button>
-    </div>
-
-    <div class="answer-section" id="answer-section">
-        <div class="revealed-focus" id="revealed-focus"></div>
-        
-        <div class="english-reference" id="en-reference"></div>
-        
-        <div class="learning-points">
-            <h3><span>//</span> LINGUISTIC INSIGHTS</h3>
-            <ul id="points-list"></ul>
+<div class="main-stage">
+    <div class="content-container" id="main-ui" style="display:none;">
+        <div class="stats-bar">
+            <span id="topic-display">[ TOPIC_LOADING ]</span>
+            <span id="progress-display">SEQ: 00/00</span>
         </div>
-        <button class="btn btn-next" onclick="nextQuestion()">NEXT CHALLENGE ➔</button>
+
+        <div class="practice-card">
+            <div class="chinese-prompt" id="cn-sentence"></div>
+            
+            <textarea id="user-input" placeholder="> Enter your translation here..."></textarea>
+            
+            <button class="btn-primary" id="check-btn" onclick="showAnswer()">DECRYPT NATIVE EXPRESSION</button>
+        </div>
+
+        <div class="analytics" id="answer-section">
+            <div class="ref-answer-box">
+                <div class="ref-tools">
+                    <button class="tool-btn" onclick="speakRef('UK')" title="英式发音"><i class="fas fa-volume-up"></i> 🇬🇧 UK</button>
+                    <button class="tool-btn" onclick="speakRef('US')" title="美式发音"><i class="fas fa-volume-up"></i> 🇺🇸 US</button>
+                    <button class="tool-btn" onclick="copyRef()" title="复制句型"><i class="far fa-copy"></i> Copy</button>
+                </div>
+                <div style="font-size:12px; color:var(--success); font-family:monospace; margin-bottom:5px;">// STANDARD_REFERENCE</div>
+                <div class="english-text" id="en-reference"></div>
+            </div>
+
+            <div class="insight-section">
+                <h5><i class="fas fa-crosshairs"></i> TARGET_EXPRESSIONS</h5>
+                <div id="revealed-focus"></div>
+
+                <h5><i class="fas fa-code-branch"></i> LINGUISTIC_BREAKDOWN</h5>
+                <ul class="insight-list" id="points-list"></ul>
+            </div>
+
+            <button class="btn-sidebar" style="justify-content:center; margin-top:30px; font-weight:bold; border-color:var(--success); color:var(--success)" onclick="nextQuestion()">
+                EXECUTE NEXT ➔
+            </button>
+        </div>
     </div>
 </div>
 
@@ -272,8 +381,6 @@
                 const res = await fetch(file);
                 if (!res.ok) continue;
                 const text = await res.text();
-                
-                // 更加健壮的分割逻辑，支持中文标题和不同格式
                 const sections = text.split(/##\s+/).slice(1);
                 
                 sections.forEach(sec => {
@@ -283,14 +390,10 @@
                         const topic = sec.match(/\*\*话题\*\*\s*[:：]\s*(.*?)\n/)[1].trim();
                         const focus = sec.match(/\*\*练习重点\*\*\s*[:：]\s*(.*?)\n/)[1].trim();
                         const en = sec.match(/\*\*英文参考\(口语\)\*\*\s*([\s\S]*?)\n\n/)[1].trim();
-                        
-                        const pointsPart = sec.split(/\*\*学习要点\*\*/)[1].split('---')[0].trim();
-                        const points = pointsPart.split('\n')
-                            .filter(l => l.trim().match(/^\d+\./))
-                            .map(l => l.replace(/^\d+\.\s*/, '').trim());
-
+                        const ptsPart = sec.split(/\*\*学习要点\*\*/)[1].split('---')[0].trim();
+                        const points = ptsPart.split('\n').filter(l => l.trim().match(/^\d+\./)).map(l => l.replace(/^\d+\.\s*/, '').trim());
                         allQuestions.push({ cn, topic, focus, en, points });
-                    } catch(e) { /* skip broken blocks */ }
+                    } catch(e) {}
                 });
             } catch(e) {}
         }
@@ -300,7 +403,7 @@
         topics.forEach(t => {
             const opt = document.createElement('option');
             opt.value = t;
-            opt.innerText = t.toUpperCase();
+            opt.innerText = t;
             selector.appendChild(opt);
         });
 
@@ -311,22 +414,32 @@
 
     function changeTopic() {
         const t = document.getElementById('topic-selector').value;
-        currentQuestions = (t === 'all') 
-            ? [...allQuestions].sort(() => Math.random() - 0.5)
-            : allQuestions.filter(q => q.topic === t);
+        currentQuestions = (t === 'all') ? [...allQuestions].sort(() => Math.random() - 0.5) : allQuestions.filter(q => q.topic === t);
         currentIndex = 0;
         render();
     }
 
+    function pickRandom() {
+        const randomIndex = Math.floor(Math.random() * allQuestions.length);
+        currentQuestions = [allQuestions[randomIndex]];
+        currentIndex = 0;
+        document.getElementById('topic-selector').value = 'all'; // Reset selector visually
+        render();
+        // Give a visual cue that it's a random pull
+        document.getElementById("topic-display").innerText = `[ RANDOM: ${currentQuestions[0].topic} ]`;
+        document.getElementById('progress-display').innerText = `SEQ: RND/RND`;
+    }
+
     function render() {
         const q = currentQuestions[currentIndex];
-        document.getElementById('progress').innerText = 
-            String(currentIndex + 1).padStart(2, '0') + " / " + String(currentQuestions.length).padStart(2, '0');
-        document.getElementById("topic-badge").innerText = q.topic;
-        document.getElementById("cn-sentence").innerText = q.cn;
+        // Only update progress normally if not in random mode
+        if (document.getElementById('progress-display').innerText !== `SEQ: RND/RND`) {
+            document.getElementById('progress-display').innerText = `SEQ: ${(currentIndex + 1).toString().padStart(2, '0')}/${currentQuestions.length.toString().padStart(2, '0')}`;
+            document.getElementById("topic-display").innerText = `[ ${q.topic} ]`;
+        }
         
-        // 渲染解析区的内容，但先隐藏
-        document.getElementById("revealed-focus").innerHTML = "⚡ <b>EXPRESSION TARGETS:</b> " + q.focus;
+        document.getElementById("cn-sentence").innerText = q.cn;
+        document.getElementById("revealed-focus").innerHTML = q.focus;
         document.getElementById("en-reference").innerText = q.en;
         
         const list = document.getElementById("points-list");
@@ -340,22 +453,61 @@
         document.getElementById("user-input").value = "";
         document.getElementById("answer-section").style.display = "none";
         document.getElementById("check-btn").style.display = "block";
+        document.querySelector('.main-stage').scrollTo({ top: 0, behavior: 'smooth' });
     }
 
     function showAnswer() {
         document.getElementById("answer-section").style.display = "block";
         document.getElementById("check-btn").style.display = "none";
-        window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
+        setTimeout(() => {
+            document.querySelector('.main-stage').scrollTo({ top: 600, behavior: 'smooth' });
+        }, 100);
     }
 
     function nextQuestion() {
+        if (document.getElementById('progress-display').innerText === `SEQ: RND/RND`) {
+            // If in random mode, just pull another random question
+            pickRandom();
+            return;
+        }
+
         currentIndex++;
         if (currentIndex >= currentQuestions.length) {
-            alert("TOPIC COMPLETED!");
+            alert("SYSTEM NOTIFICATION: Module Completed.");
             currentIndex = 0;
         }
         render();
-        window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    // TTS 发音引擎
+    function speakRef(accent) {
+        const text = document.getElementById("en-reference").innerText;
+        if ('speechSynthesis' in window) {
+            window.speechSynthesis.cancel(); // 停止当前正在播放的语音
+            const msg = new SpeechSynthesisUtterance(text);
+            msg.lang = accent === 'UK' ? 'en-GB' : 'en-US';
+            msg.rate = 0.9; // 稍微放慢语速以便模仿
+            window.speechSynthesis.speak(msg);
+        } else {
+            alert("抱歉，您的浏览器不支持语音朗读功能。");
+        }
+    }
+
+    // 一键复制
+    function copyRef() {
+        const text = document.getElementById("en-reference").innerText;
+        navigator.clipboard.writeText(text).then(() => {
+            const btn = document.querySelector('.fa-copy').parentElement;
+            const originalText = btn.innerHTML;
+            btn.innerHTML = '<i class="fas fa-check"></i> Copied!';
+            btn.style.color = 'var(--success)';
+            btn.style.borderColor = 'var(--success)';
+            setTimeout(() => {
+                btn.innerHTML = originalText;
+                btn.style.color = '';
+                btn.style.borderColor = '';
+            }, 2000);
+        });
     }
 
     init();
