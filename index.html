@@ -232,4 +232,282 @@
         .btn-next {
             background: transparent;
             border: 1px solid #fff;
-            color
+            color: #fff;
+            padding: 12px 30px;
+            border-radius: 30px;
+            cursor: pointer;
+            margin-top: 40px;
+            float: right;
+        }
+
+        .loader { position: fixed; inset: 0; background: #050505; display: flex; flex-direction: column; justify-content: center; align-items: center; z-index: 1000; color: var(--text-muted); font-size: 13px; }
+    </style>
+</head>
+<body>
+
+<div id="loader" class="loader">
+    <div style="width: 24px; height: 24px; border: 2px solid #333; border-top-color: var(--accent-gold); border-radius: 50%; animation: spin 1s linear infinite; margin-bottom: 20px;"></div>
+    <div id="loading-text">正在加载雅思语料库...</div>
+</div>
+<style>@keyframes spin { to { transform: rotate(360deg); } }</style>
+
+<div class="sidebar">
+    <div class="brand">
+        <h1>雅思口语小助手</h1>
+        <p>Refining Vocabulary &<br>Grammatical Texture</p>
+    </div>
+
+    <div class="nav-section">
+        <div class="nav-label">Dashboard</div>
+        <div class="stats-grid">
+            <div class="stat-box">
+                <span class="stat-val" id="stat-today">0</span>
+                <span class="stat-lab">今日练习</span>
+            </div>
+            <div class="stat-box">
+                <span class="stat-val" id="stat-total">0</span>
+                <span class="stat-lab">总题库量</span>
+            </div>
+        </div>
+    </div>
+
+    <div class="nav-section">
+        <div class="nav-label">Topic Library</div>
+        <select id="topic-selector" onchange="changeTopic()">
+            <option value="all">混合训练 (Mixed Topics)</option>
+        </select>
+    </div>
+
+    <div class="nav-section" style="margin-top: auto;">
+        <div class="nav-label">Personal Space</div>
+        <button class="btn-ghost" onclick="pickRandom()"><i class="fas fa-random"></i> 手气不错 (Random)</button>
+        <button class="btn-ghost" onclick="toggleReviewMode()"><i class="fas fa-star"></i> 我的错题本 (Review)</button>
+    </div>
+</div>
+
+<div class="main-stage">
+    <div class="practice-area" id="main-ui" style="display:none;">
+        <div class="chinese-prompt" id="cn-sentence"></div>
+        
+        <textarea id="user-input" placeholder="请阅读中文，并在脑中或此处尝试回译..."></textarea>
+        
+        <button class="btn-main" id="check-btn" onclick="showAnswer()">对比地道表达</button>
+
+        <div class="analysis-view" id="answer-section">
+            <div class="ref-card">
+                <div class="favorite-btn" id="fav-star" onclick="toggleFavorite()"><i class="fas fa-star"></i></div>
+                <div class="ref-label">
+                    <span>NATIVE RE-TRANSLATION</span>
+                </div>
+                <div class="english-text" id="en-reference"></div>
+                
+                <div class="target-tags" id="revealed-focus"></div>
+
+                <div class="insight-list" id="points-list"></div>
+
+                <div class="tool-bar">
+                    <span class="tool-link" onclick="speak('UK')"><i class="fas fa-volume-up"></i> 🇬🇧 UK Audio</span>
+                    <span class="tool-link" onclick="speak('US')"><i class="fas fa-volume-up"></i> 🇺🇸 US Audio</span>
+                    <span class="tool-link" onclick="copyText()"><i class="far fa-copy"></i> 复制语料</span>
+                </div>
+            </div>
+            
+            <button class="btn-next" onclick="nextQuestion()">下一题 →</button>
+        </div>
+    </div>
+</div>
+
+<script>
+    const files = [
+        'media_sentences.md', 'tech_sentences.md', 'life_sentences.md',
+        'work_sentences.md', 'education_sentences.md', 'travel_sentences.md',
+        'food_sentences.md', 'transport_sentences.md', 'health_sentences.md',
+        'environment_sentences.md', 'government_sentences.md'
+    ];
+
+    let allQuestions = [];
+    let currentQuestions = [];
+    let currentIndex = 0;
+    let favorites = JSON.parse(localStorage.getItem('ielts_favs') || '[]');
+    let reviewMode = false;
+
+    // 简单的中文字符串加密，用于生成唯一的题目ID（修复btoa中文崩溃Bug）
+    function generateId(str) {
+        return encodeURIComponent(str).replace(/%/g, '').substring(0, 20);
+    }
+
+    async function init() {
+        for (const file of files) {
+            try {
+                const res = await fetch(file);
+                if (!res.ok) continue;
+                const text = await res.text();
+                
+                // 使用更健壮的正则分割每个题目区块
+                const sections = text.split(/##\s+[A-Za-z0-9_]+/).slice(1);
+                
+                sections.forEach(sec => {
+                    if (sec.includes('使用的表达覆盖')) return;
+                    try {
+                        // 使用明确的边界提取内容，防止换行符格式不同导致的读取失败
+                        const cnMatch = sec.match(/\*\*中文\*\*([\s\S]*?)\*\*话题\*\*/);
+                        if (!cnMatch) return;
+                        const cn = cnMatch[1].trim().replace(/^[:：\s]+/, '');
+
+                        const topicMatch = sec.match(/\*\*话题\*\*([\s\S]*?)\*\*练习重点\*\*/);
+                        const topicRaw = topicMatch[1].trim().replace(/^[:：\s]+/, '');
+                        const topic = topicRaw.replace(/\(.*\)/, "").trim(); // 去掉括号内容
+                        
+                        const focusMatch = sec.match(/\*\*练习重点\*\*([\s\S]*?)\*\*英文参考/);
+                        const focus = focusMatch[1].trim().replace(/^[:：\s]+/, '');
+
+                        const enMatch = sec.match(/\*\*英文参考\(口语\)\*\*([\s\S]*?)\*\*学习要点\*\*/);
+                        const en = enMatch[1].trim().replace(/^[:：\s]+/, '');
+
+                        const ptsPart = sec.split(/\*\*学习要点\*\*/)[1].split('---')[0].trim();
+                        const points = ptsPart.split('\n').filter(l => l.trim().match(/^\d+\./)).map(l => l.replace(/^\d+\.\s*/, '').trim());
+                        
+                        allQuestions.push({ id: generateId(cn), cn, topic, focus, en, points });
+                    } catch(e) {
+                        console.warn("跳过一个格式不规范的题目", e);
+                    }
+                });
+            } catch(e) {
+                console.warn("加载文件失败", file);
+            }
+        }
+
+        // 错误处理反馈机制
+        if (allQuestions.length === 0) {
+            document.getElementById('loader').innerHTML = "<div style='color:#ef4444; text-align:center;'><i class='fas fa-exclamation-circle fa-2x' style='margin-bottom:15px'></i><br>读取失败<br><br><span style='color:#64748b; font-size:12px;'>请确认是否在 GitHub Pages 网址中打开<br>或者 .md 文件是否上传成功</span></div>";
+            return;
+        }
+
+        document.getElementById('stat-total').innerText = allQuestions.length;
+        updateDailyStats();
+
+        const topics = [...new Set(allQuestions.map(q => q.topic))];
+        const selector = document.getElementById('topic-selector');
+        topics.forEach(t => {
+            const opt = document.createElement('option');
+            opt.value = t; opt.innerText = t; selector.appendChild(opt);
+        });
+
+        document.getElementById('loader').style.display = 'none';
+        document.getElementById('main-ui').style.display = 'block';
+        changeTopic();
+    }
+
+    function changeTopic() {
+        reviewMode = false;
+        const t = document.getElementById('topic-selector').value;
+        currentQuestions = (t === 'all') ? [...allQuestions].sort(() => Math.random() - 0.5) : allQuestions.filter(q => q.topic === t);
+        currentIndex = 0;
+        render();
+    }
+
+    function toggleReviewMode() {
+        if (favorites.length === 0) { alert("错题本是空的哦！在练习时点击答案右上角的⭐即可收藏。"); return; }
+        reviewMode = true;
+        currentQuestions = allQuestions.filter(q => favorites.includes(q.id));
+        currentIndex = 0;
+        document.getElementById('topic-selector').value = 'all'; // 视觉上重置
+        render();
+    }
+
+    function render() {
+        if (currentQuestions.length === 0) return;
+        const q = currentQuestions[currentIndex];
+        document.getElementById("cn-sentence").innerText = q.cn;
+        document.getElementById("en-reference").innerText = q.en;
+        document.getElementById("revealed-focus").innerText = "🎯 Target: " + q.focus;
+        
+        const list = document.getElementById("points-list");
+        list.innerHTML = "";
+        q.points.forEach(p => {
+            const div = document.createElement("li");
+            div.innerHTML = p.replace(/\*\*(.*?)\*\*/g, '<b>$1</b>');
+            list.appendChild(div);
+        });
+
+        const star = document.getElementById('fav-star');
+        star.className = favorites.includes(q.id) ? 'favorite-btn active' : 'favorite-btn';
+
+        document.getElementById("user-input").value = "";
+        document.getElementById("answer-section").style.display = "none";
+        document.getElementById("check-btn").style.display = "block";
+    }
+
+    function showAnswer() {
+        document.getElementById("answer-section").style.display = "block";
+        document.getElementById("check-btn").style.display = "none";
+        incrementDaily();
+    }
+
+    function nextQuestion() {
+        currentIndex++;
+        if (currentIndex >= currentQuestions.length) {
+            alert(reviewMode ? "错题本复习完毕！" : "本话题练习完毕！");
+            currentIndex = 0;
+        }
+        render();
+    }
+
+    function pickRandom() {
+        reviewMode = false;
+        currentIndex = Math.floor(Math.random() * allQuestions.length);
+        currentQuestions = [allQuestions[currentIndex]];
+        currentIndex = 0;
+        document.getElementById('topic-selector').value = 'all';
+        render();
+    }
+
+    function toggleFavorite() {
+        const q = currentQuestions[currentIndex];
+        if (favorites.includes(q.id)) {
+            favorites = favorites.filter(id => id !== q.id); // 移除收藏
+        } else {
+            favorites.push(q.id); // 添加收藏
+        }
+        localStorage.setItem('ielts_favs', JSON.stringify(favorites));
+        render();
+    }
+
+    function updateDailyStats() {
+        const today = new Date().toLocaleDateString();
+        if (localStorage.getItem('ielts_date') !== today) {
+            localStorage.setItem('ielts_date', today);
+            localStorage.setItem('ielts_count', '0');
+        }
+        document.getElementById('stat-today').innerText = localStorage.getItem('ielts_count');
+    }
+
+    function incrementDaily() {
+        let count = parseInt(localStorage.getItem('ielts_count') || '0');
+        count++;
+        localStorage.setItem('ielts_count', count.toString());
+        document.getElementById('stat-today').innerText = count;
+    }
+
+    function speak(accent) {
+        if (!('speechSynthesis' in window)) {
+            alert("抱歉，您的浏览器不支持语音朗读功能。");
+            return;
+        }
+        window.speechSynthesis.cancel();
+        const msg = new SpeechSynthesisUtterance(document.getElementById("en-reference").innerText);
+        msg.lang = accent === 'UK' ? 'en-GB' : 'en-US';
+        msg.rate = 0.85;
+        window.speechSynthesis.speak(msg);
+    }
+
+    function copyText() {
+        navigator.clipboard.writeText(document.getElementById("en-reference").innerText);
+        alert("语料已复制到剪贴板");
+    }
+
+    window.onload = init;
+</script>
+
+</body>
+</html>
