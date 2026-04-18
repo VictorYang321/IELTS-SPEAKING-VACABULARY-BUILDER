@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>雅思口语小助手 | True Interstellar</title>
+    <title>雅思口语小助手 | Jovian Edition</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
@@ -47,54 +47,54 @@
         }
         @keyframes twinkle { 0% { opacity: 0.2; } 100% { opacity: 0.7; } }
 
-        /* 3. 核心特效：真正的 3D 巨型星环行星 */
+        /* 3. 核心特效：银白木星 (Jovian System) */
         .saturn-system {
             position: fixed; 
-            right: -20vw; /* 藏一点在屏幕外更显巨大 */
+            right: -20vw; 
             bottom: -35vh; 
-            width: 85vw; /* 提升了整体大小 */
+            width: 85vw; 
             height: 85vw;
             z-index: -2;
             pointer-events: none;
-            opacity: 0.8; /* 提升了可视度 */
+            opacity: 0.75; 
             animation: floatPlanet 30s ease-in-out infinite alternate;
         }
 
         .saturn-body {
             position: absolute; inset: 0;
             border-radius: 50%;
-            /* 更有质感的气态星球光影 */
-            background: radial-gradient(circle at 35% 35%, rgba(139, 92, 246, 0.15) 0%, rgba(10, 12, 20, 0.5) 50%, rgba(0,0,0,0.9) 80%);
+            /* 调整为更冷峻的银灰色调 */
+            background: radial-gradient(circle at 35% 35%, rgba(226, 232, 240, 0.1) 0%, rgba(10, 12, 20, 0.5) 50%, rgba(0,0,0,0.95) 80%);
             box-shadow: 
-                inset 60px 60px 150px rgba(139, 92, 246, 0.1), 
-                inset -80px -80px 200px rgba(0,0,0,0.95);
-            z-index: 2; /* 星球在中间层 */
+                inset 60px 60px 150px rgba(226, 232, 240, 0.05), 
+                inset -80px -80px 200px rgba(0,0,0,0.98);
+            z-index: 2; 
         }
 
         .saturn-ring {
             position: absolute;
-            /* 星环比星球大得多 */
-            top: -45%; left: -45%; right: -45%; bottom: -45%;
+            /* 缩小直径，让星环更贴合星球 */
+            top: -25%; left: -25%; right: -25%; bottom: -25%;
             border-radius: 50%;
-            border: 5vw solid rgba(6, 182, 212, 0.15); /* 加宽且加亮了星环 */
+            /* 宽度大幅度变细，颜色变为银白冰尘 */
+            border: 1.2vw solid rgba(226, 232, 240, 0.08); 
             box-shadow: 
-                0 0 80px rgba(6, 182, 212, 0.1), 
-                inset 0 0 80px rgba(6, 182, 212, 0.1);
-            transform: rotateX(75deg) rotateY(-15deg); /* 倾斜角度不变 */
+                0 0 30px rgba(226, 232, 240, 0.08), 
+                inset 0 0 30px rgba(226, 232, 240, 0.08);
+            transform: rotateX(76deg) rotateY(-15deg); 
         }
 
-        /* 纯 CSS 解决 3D 遮挡：后半圈在星球下，前半圈在星球上 */
         .saturn-ring-back {
-            z-index: 1; /* 在星球底层 */
-            clip-path: polygon(0 0, 100% 0, 100% 50%, 0 50%); /* 裁掉下半圈 */
-            border-color: rgba(6, 182, 212, 0.05); /* 背光面稍暗 */
+            z-index: 1; 
+            clip-path: polygon(0 0, 100% 0, 100% 50%, 0 50%); 
+            border-color: rgba(226, 232, 240, 0.02); /* 背光面极其微弱 */
         }
 
         .saturn-ring-front {
-            z-index: 3; /* 在星球顶层 */
-            clip-path: polygon(0 50%, 100% 50%, 100% 100%, 0 100%); /* 裁掉上半圈 */
-            border-color: rgba(6, 182, 212, 0.25); /* 迎光面明亮 */
-            border-bottom-color: rgba(139, 92, 246, 0.3); /* 底部反射一点紫光 */
+            z-index: 3; 
+            clip-path: polygon(0 50%, 100% 50%, 100% 100%, 0 100%); 
+            border-color: rgba(255, 255, 255, 0.25); /* 迎光面形成一道锐利的银白反光 */
+            border-bottom-color: rgba(226, 232, 240, 0.05); 
         }
 
         @keyframes floatPlanet {
@@ -141,7 +141,7 @@
         .btn-ghost i { width: 24px; color: var(--accent-purple); font-size: 15px; }
         .btn-ghost:hover { background: rgba(255,255,255,0.05); color: #fff; }
 
-        /* --- 主内容区 --- */
+        /* --- 主内容区 (居中布局) --- */
         .main-stage { flex-grow: 1; display: flex; flex-direction: column; align-items: center; padding: 40px; overflow-y: auto; position: relative; }
         
         .content-wrapper { max-width: 800px; width: 100%; display: flex; flex-direction: column; align-items: center; margin-top: auto; margin-bottom: auto; }
@@ -357,7 +357,6 @@
     let practicedIds = JSON.parse(sessionStorage.getItem('ielts_practiced') || '[]');
     let reviewMode = false, tempSelectedText = "";
 
-    // 录音相关变量
     let mediaRecorder = null;
     let audioChunks = [];
     let audioBlob = null;
@@ -396,7 +395,6 @@
         changeTopic();
     }
 
-    // 3D 星球
     let sphereX = 0, sphereY = 0;
     function initSphere(topics) {
         const container = document.getElementById('sphere-cloud');
@@ -428,7 +426,6 @@
         animate();
     }
 
-    // 输入模式切换
     function switchInputMode(mode) {
         document.getElementById('tab-text').className = mode === 'text' ? 'tab-btn active' : 'tab-btn';
         document.getElementById('tab-voice').className = mode === 'voice' ? 'tab-btn active' : 'tab-btn';
@@ -436,7 +433,6 @@
         document.getElementById('voice-input').style.display = mode === 'voice' ? 'flex' : 'none';
     }
 
-    // 录音控制
     async function toggleRecording() {
         const btn = document.getElementById('record-btn');
         const status = document.getElementById('record-status');
@@ -522,7 +518,6 @@
 
         document.getElementById('fav-star').className = favorites.includes(q.id) ? 'favorite-btn active' : 'favorite-btn';
 
-        // 重置状态
         document.getElementById("user-input").value = "";
         audioBlob = null; 
         document.getElementById('record-btn').innerHTML = '<i class="fas fa-microphone"></i> <span>点击开始录音</span>';
@@ -534,12 +529,12 @@
             document.getElementById("input-section").style.display = "none";
             document.getElementById("check-btn").style.display = "none";
             document.getElementById("answer-section").style.display = "block";
-            document.getElementById('sphere-wrapper').style.display = 'none'; // 背诵模式隐藏星球
+            document.getElementById('sphere-wrapper').style.display = 'none'; 
         } else {
             document.getElementById("input-section").style.display = "block";
             document.getElementById("check-btn").style.display = "block";
             document.getElementById("answer-section").style.display = "none";
-            document.getElementById('sphere-wrapper').style.display = 'flex'; // 提问阶段展示星球
+            document.getElementById('sphere-wrapper').style.display = 'flex'; 
         }
     }
 
@@ -551,17 +546,14 @@
             incrementDaily();
         }
         
-        // 隐藏星球，显示解析
         document.getElementById('sphere-wrapper').style.display = 'none'; 
         document.getElementById("answer-section").style.display = "block";
         document.getElementById("check-btn").style.display = "none";
         
-        // 判断是否有录音回放
         if(audioBlob) {
             document.getElementById("playback-zone").style.display = "flex";
         }
         
-        // 如果正在录音但用户点了看答案，强制停止
         if(isRecording) toggleRecording();
     }
 
@@ -587,7 +579,6 @@
         localStorage.setItem('ielts_favs', JSON.stringify(favorites));
     }
 
-    // 划线功能
     document.addEventListener('mouseup', function(e) {
         if(e.target.closest('#highlight-tooltip') || e.target.closest('.modal-overlay')) return;
         const sel = window.getSelection();
