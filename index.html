@@ -122,7 +122,7 @@
         }
 
         .chinese-prompt {
-            font-size: 26px;
+            font-size: 24px;
             font-weight: 400;
             line-height: 1.6;
             margin-bottom: 40px;
@@ -187,7 +187,6 @@
             align-items: center;
         }
 
-        /* 核心参考答案改用衬线字体 */
         .english-text {
             font-family: 'Libre Baskerville', serif;
             font-size: 22px;
@@ -221,7 +220,9 @@
             cursor: pointer;
             font-size: 20px;
             color: var(--text-muted);
+            transition: 0.2s;
         }
+        .favorite-btn:hover { color: #fff; }
         .favorite-btn.active { color: var(--accent-gold); }
 
         .tool-bar { display: flex; gap: 20px; margin-top: 10px; }
@@ -231,199 +232,4 @@
         .btn-next {
             background: transparent;
             border: 1px solid #fff;
-            color: #fff;
-            padding: 12px 30px;
-            border-radius: 30px;
-            cursor: pointer;
-            margin-top: 40px;
-            float: right;
-        }
-
-        .loader { position: fixed; inset: 0; background: #000; display: flex; justify-content: center; align-items: center; z-index: 1000; }
-    </style>
-</head>
-<body>
-
-<div id="loader" class="loader">
-    <div style="width: 20px; height: 20px; border: 2px solid #333; border-top-color: #fff; border-radius: 50%; animation: spin 1s linear infinite;"></div>
-</div>
-<style>@keyframes spin { to { transform: rotate(360deg); } }</style>
-
-<div class="sidebar">
-    <div class="brand">
-        <h1>雅思口语小助手</h1>
-        <p>Refining Vocabulary &<br>Grammatical Texture</p>
-    </div>
-
-    <div class="nav-section">
-        <div class="nav-label">Dashboard</div>
-        <div class="stats-grid">
-            <div class="stat-box">
-                <span class="stat-val" id="stat-today">0</span>
-                <span class="stat-lab">今日完成</span>
-            </div>
-            <div class="stat-box">
-                <span class="stat-val" id="stat-total">0</span>
-                <span class="stat-lab">总题库</span>
-            </div>
-        </div>
-    </div>
-
-    <div class="nav-section">
-        <div class="nav-label">Practice Library</div>
-        <select id="topic-selector" onchange="changeTopic()">
-            <option value="all">混合挑战 (Mixed)</option>
-        </select>
-    </div>
-
-    <div class="nav-section" style="margin-top: auto;">
-        <div class="nav-label">Personal Space</div>
-        <button class="btn-ghost" onclick="pickRandom()"><i class="fas fa-random"></i> 随机抽题</button>
-        <button class="btn-ghost" onclick="toggleReviewMode()"><i class="fas fa-star"></i> 我的收藏夹</button>
-    </div>
-</div>
-
-<div class="main-stage">
-    <div class="practice-area" id="main-ui" style="display:none;">
-        <div class="chinese-prompt" id="cn-sentence"></div>
-        
-        <textarea id="user-input" placeholder="请阅读中文，并在脑中或此处尝试回译..."></textarea>
-        
-        <button class="btn-main" id="check-btn" onclick="showAnswer()">分析语料质量</button>
-
-        <div class="analysis-view" id="answer-section">
-            <div class="ref-card">
-                <div class="favorite-btn" id="fav-star" onclick="toggleFavorite()"><i class="fas fa-star"></i></div>
-                <div class="ref-label">
-                    <span>NATIVE RE-TRANSLATION</span>
-                </div>
-                <div class="english-text" id="en-reference"></div>
-                
-                <div class="target-tags" id="revealed-focus"></div>
-
-                <div class="insight-list" id="points-list"></div>
-
-                <div class="tool-bar">
-                    <span class="tool-link" onclick="speak('UK')"><i class="fas fa-volume-up"></i> UK Audio</span>
-                    <span class="tool-link" onclick="speak('US')"><i class="fas fa-volume-up"></i> US Audio</span>
-                    <span class="tool-link" onclick="copyText()"><i class="far fa-copy"></i> Copy Text</span>
-                </div>
-            </div>
-            
-            <button class="btn-next" onclick="nextQuestion()">Next Item →</button>
-        </div>
-    </div>
-</div>
-
-<script>
-    const files = [
-        'media_sentences.md', 'tech_sentences.md', 'life_sentences.md',
-        'work_sentences.md', 'education_sentences.md', 'travel_sentences.md',
-        'food_sentences.md', 'transport_sentences.md', 'health_sentences.md',
-        'environment_sentences.md', 'government_sentences.md'
-    ];
-
-    let allQuestions = [];
-    let currentQuestions = [];
-    let currentIndex = 0;
-    let favorites = JSON.parse(localStorage.getItem('ielts_favs') || '[]');
-    let reviewMode = false;
-
-    async function init() {
-        for (const file of files) {
-            try {
-                const res = await fetch(file);
-                if (!res.ok) continue;
-                const text = await res.text();
-                const sections = text.split(/##\s+/).slice(1);
-                
-                sections.forEach(sec => {
-                    if (sec.includes('使用的表达覆盖')) return;
-                    try {
-                        const cn = sec.match(/\*\*中文\*\*\s*[:：]?\s*([\s\S]*?)\n/)[1].trim();
-                        // 逻辑修复：合并含括号的话题
-                        const topicRaw = sec.match(/\*\*话题\*\*\s*[:：]\s*(.*?)\n/)[1].trim();
-                        const topic = topicRaw.replace(/\(.*\)/, "").trim(); 
-                        
-                        const focus = sec.match(/\*\*练习重点\*\*\s*[:：]\s*(.*?)\n/)[1].trim();
-                        const en = sec.match(/\*\*英文参考\(口语\)\*\*\s*[:：]?\s*([\s\S]*?)\n\n/)[1].trim();
-                        const ptsPart = sec.split(/\*\*学习要点\*\*/)[1].split('---')[0].trim();
-                        const points = ptsPart.split('\n').filter(l => l.trim().match(/^\d+\./)).map(l => l.replace(/^\d+\.\s*/, '').trim());
-                        
-                        allQuestions.push({ id: btoa(cn).substring(0,16), cn, topic, focus, en, points });
-                    } catch(e) {}
-                });
-            } catch(e) {}
-        }
-
-        document.getElementById('stat-total').innerText = allQuestions.length;
-        updateDailyStats();
-
-        const topics = [...new Set(allQuestions.map(q => q.topic))];
-        const selector = document.getElementById('topic-selector');
-        topics.forEach(t => {
-            const opt = document.createElement('option');
-            opt.value = t; opt.innerText = t; selector.appendChild(opt);
-        });
-
-        document.getElementById('loader').style.display = 'none';
-        document.getElementById('main-ui').style.display = 'block';
-        changeTopic();
-    }
-
-    function changeTopic() {
-        reviewMode = false;
-        const t = document.getElementById('topic-selector').value;
-        currentQuestions = (t === 'all') ? [...allQuestions].sort(() => Math.random() - 0.5) : allQuestions.filter(q => q.topic === t);
-        currentIndex = 0;
-        render();
-    }
-
-    function toggleReviewMode() {
-        if (favorites.length === 0) { alert("收藏夹还是空的哦，练习时点星星收藏题目吧！"); return; }
-        reviewMode = true;
-        currentQuestions = allQuestions.filter(q => favorites.includes(q.id));
-        currentIndex = 0;
-        render();
-    }
-
-    function render() {
-        const q = currentQuestions[currentIndex];
-        document.getElementById("cn-sentence").innerText = q.cn;
-        document.getElementById("en-reference").innerText = q.en;
-        document.getElementById("revealed-focus").innerText = q.focus;
-        
-        const list = document.getElementById("points-list");
-        list.innerHTML = "";
-        q.points.forEach(p => {
-            const div = document.createElement("div");
-            div.style.marginBottom = "15px";
-            div.innerHTML = p.replace(/\*\*(.*?)\*\*/g, '<b>$1</b>');
-            list.appendChild(div);
-        });
-
-        const star = document.getElementById('fav-star');
-        star.className = favorites.includes(q.id) ? 'favorite-btn active' : 'favorite-btn';
-
-        document.getElementById("user-input").value = "";
-        document.getElementById("answer-section").style.display = "none";
-        document.getElementById("check-btn").style.display = "block";
-    }
-
-    function showAnswer() {
-        document.getElementById("answer-section").style.display = "block";
-        document.getElementById("check-btn").style.display = "none";
-        incrementDaily();
-    }
-
-    function nextQuestion() {
-        currentIndex++;
-        if (currentIndex >= currentQuestions.length) {
-            alert(reviewMode ? "收藏夹复习完毕！" : "本话题练习完毕！");
-            currentIndex = 0;
-        }
-        render();
-    }
-
-    function pickRandom() {
-        currentIndex = Math.floor
+            color
