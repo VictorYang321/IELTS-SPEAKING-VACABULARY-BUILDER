@@ -3,55 +3,63 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>雅思口语小助手 | Cosmic Sphere Edition</title>
+    <title>雅思口语小助手 | Cosmic Voice Edition</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         :root {
             --bg-deep-space: #020306;
-            --nebula-purple: rgba(139, 92, 246, 0.15);
-            --nebula-cyan: rgba(6, 182, 212, 0.15);
+            --nebula-purple: rgba(139, 92, 246, 0.12);
+            --nebula-cyan: rgba(6, 182, 212, 0.12);
             --starlight: #e2e8f0;
             --starlight-dim: #94a3b8;
             --accent-glow: #06b6d4;
             --accent-purple: #8b5cf6;
-            --card-glass: rgba(10, 12, 20, 0.6);
+            --card-glass: rgba(10, 12, 20, 0.65);
             --border-glass: rgba(255, 255, 255, 0.08);
             --success: #10b981;
+            --danger: #ef4444;
         }
 
         body {
             font-family: 'Inter', sans-serif;
             background-color: var(--bg-deep-space);
             background-image: 
-                radial-gradient(circle at 20% 40%, var(--nebula-purple), transparent 50%),
-                radial-gradient(circle at 80% 60%, var(--nebula-cyan), transparent 50%);
+                radial-gradient(circle at 10% 30%, var(--nebula-purple), transparent 50%),
+                radial-gradient(circle at 90% 70%, var(--nebula-cyan), transparent 50%);
             color: var(--starlight);
             margin: 0; display: flex; height: 100vh; overflow: hidden;
         }
 
-        /* 沉浸式星空背景 */
+        /* 沉浸式星空与巨型暗星背景 */
         .stars-bg {
-            position: fixed; inset: 0; z-index: -1;
+            position: fixed; inset: 0; z-index: -2;
             background-image: 
-                radial-gradient(1.5px 1.5px at 20px 30px, #ffffff, rgba(0,0,0,0)),
-                radial-gradient(2px 2px at 150px 160px, rgba(255,255,255,0.8), rgba(0,0,0,0)),
-                radial-gradient(1px 1px at 90px 40px, #ffffff, rgba(0,0,0,0)),
-                radial-gradient(2px 2px at 230px 280px, rgba(255,255,255,0.6), rgba(0,0,0,0));
-            background-repeat: repeat; background-size: 300px 300px; opacity: 0.3;
-            animation: twinkle 15s linear infinite alternate;
+                radial-gradient(1px 1px at 20px 30px, #fff, rgba(0,0,0,0)),
+                radial-gradient(1.5px 1.5px at 150px 160px, rgba(255,255,255,0.8), rgba(0,0,0,0)),
+                radial-gradient(1px 1px at 90px 40px, #fff, rgba(0,0,0,0)),
+                radial-gradient(2px 2px at 230px 280px, rgba(255,255,255,0.5), rgba(0,0,0,0));
+            background-repeat: repeat; background-size: 250px 250px; opacity: 0.25;
+            animation: twinkle 20s linear infinite alternate;
         }
-        @keyframes twinkle { 0% { opacity: 0.1; } 100% { opacity: 0.4; } }
+        .planet-bg {
+            position: fixed; right: -15vw; bottom: -20vh; width: 60vw; height: 60vw;
+            border-radius: 50%; z-index: -1;
+            background: radial-gradient(circle at 30% 30%, rgba(255,255,255,0.02), rgba(0,0,0,0) 60%);
+            box-shadow: inset 40px 40px 100px rgba(139, 92, 246, 0.03), inset -50px -50px 120px rgba(0,0,0,0.8);
+            opacity: 0.8;
+        }
+        @keyframes twinkle { 0% { opacity: 0.1; } 100% { opacity: 0.3; } }
 
         /* --- 侧边栏 --- */
         .sidebar {
-            width: 320px; background: rgba(2, 3, 6, 0.8); backdrop-filter: blur(15px);
+            width: 320px; background: rgba(2, 3, 6, 0.75); backdrop-filter: blur(15px);
             border-right: 1px solid var(--border-glass); display: flex; flex-direction: column;
             padding: 40px 30px; box-sizing: border-box; z-index: 10;
         }
 
-        .brand h1 { font-size: 20px; margin: 0; color: #fff; text-shadow: 0 0 20px var(--accent-glow); }
-        .brand p { font-size: 11px; color: var(--starlight-dim); margin: 8px 0 35px 0; letter-spacing: 1px; }
+        .brand h1 { font-size: 20px; margin: 0; color: #fff; text-shadow: 0 0 15px var(--accent-glow); }
+        .brand p { font-size: 11px; color: var(--starlight-dim); margin: 8px 0 35px 0; letter-spacing: 1px; line-height: 1.4; }
 
         .nav-label { font-size: 10px; text-transform: uppercase; letter-spacing: 2px; color: var(--accent-purple); margin-bottom: 15px; font-weight: 600; }
 
@@ -61,17 +69,15 @@
         .stat-lab { font-size: 10px; color: var(--starlight-dim); margin-top: 5px; }
 
         .btn-random-big {
-            width: 100%; background: linear-gradient(135deg, rgba(139,92,246,0.25), rgba(6,182,212,0.25));
-            border: 1px solid rgba(6,182,212,0.5); color: #fff; padding: 15px; border-radius: 10px;
-            font-size: 15px; font-weight: 600; cursor: pointer; transition: 0.3s; margin-bottom: 30px;
-            box-shadow: 0 5px 20px rgba(0,0,0,0.4);
+            width: 100%; background: linear-gradient(135deg, rgba(139,92,246,0.2), rgba(6,182,212,0.2));
+            border: 1px solid rgba(6,182,212,0.4); color: #fff; padding: 14px; border-radius: 10px;
+            font-size: 14px; font-weight: 600; cursor: pointer; transition: 0.3s; margin-bottom: 30px;
         }
-        .btn-random-big:hover { transform: translateY(-3px); box-shadow: 0 8px 25px rgba(6,182,212,0.3); }
+        .btn-random-big:hover { transform: translateY(-2px); box-shadow: 0 5px 20px rgba(6,182,212,0.25); }
 
         select { width: 100%; padding: 12px; background: rgba(0,0,0,0.5); border: 1px solid var(--border-glass); color: #fff; border-radius: 8px; margin-bottom: 15px; outline: none; cursor: pointer; }
 
-        /* 过滤开关 */
-        .toggle-container { display: flex; align-items: center; justify-content: space-between; background: rgba(255,255,255,0.03); padding: 12px 15px; border-radius: 8px; margin-bottom: 30px; border: 1px solid var(--border-glass); }
+        .toggle-container { display: flex; align-items: center; justify-content: space-between; background: rgba(255,255,255,0.02); padding: 12px 15px; border-radius: 8px; margin-bottom: 30px; border: 1px solid var(--border-glass); }
         .toggle-container span { font-size: 12px; color: var(--starlight-dim); }
         .switch { position: relative; display: inline-block; width: 40px; height: 22px; }
         .switch input { opacity: 0; width: 0; height: 0; }
@@ -80,94 +86,98 @@
         input:checked + .slider { background-color: var(--accent-glow); }
         input:checked + .slider:before { transform: translateX(18px); background-color: #fff; }
 
-        .btn-ghost { width: 100%; text-align: left; background: transparent; border: none; color: var(--starlight); padding: 14px 10px; font-size: 14px; cursor: pointer; transition: 0.2s; display: flex; align-items: center; border-radius: 8px; margin-bottom: 8px; }
-        .btn-ghost i { width: 24px; color: var(--accent-purple); font-size: 16px; }
+        .btn-ghost { width: 100%; text-align: left; background: transparent; border: none; color: var(--starlight); padding: 12px 10px; font-size: 13px; cursor: pointer; transition: 0.2s; display: flex; align-items: center; border-radius: 8px; margin-bottom: 5px; }
+        .btn-ghost i { width: 24px; color: var(--accent-purple); font-size: 15px; }
         .btn-ghost:hover { background: rgba(255,255,255,0.05); color: #fff; }
 
-        /* --- 主内容区 (垂直居中) --- */
-        .main-stage { flex-grow: 1; display: flex; flex-direction: column; justify-content: center; align-items: center; padding: 40px; overflow-y: auto; position: relative; }
+        /* --- 主内容区 (居中布局) --- */
+        .main-stage { flex-grow: 1; display: flex; flex-direction: column; align-items: center; padding: 40px; overflow-y: auto; position: relative; }
         
-        /* 3D 星球容器 */
-        #sphere-cloud { width: 300px; height: 300px; position: relative; perspective: 1000px; margin-bottom: 20px; transition: 0.5s; }
-        .sphere-tag { position: absolute; left: 50%; top: 50%; color: var(--accent-glow); font-weight: 600; font-size: 14px; cursor: pointer; transition: color 0.3s; transform-style: preserve-3d; white-space: nowrap; text-shadow: 0 0 10px rgba(6,182,212,0.5); }
+        .content-wrapper { max-width: 800px; width: 100%; display: flex; flex-direction: column; align-items: center; margin-top: auto; margin-bottom: auto; }
+
+        /* 3D 星球容器 (完美居中) */
+        .sphere-container { width: 100%; height: 260px; display: flex; justify-content: center; align-items: center; margin-bottom: 20px; perspective: 1000px; transition: opacity 0.5s; }
+        #sphere-cloud { width: 240px; height: 240px; position: relative; transform-style: preserve-3d; }
+        .sphere-tag { position: absolute; left: 50%; top: 50%; color: var(--accent-glow); font-weight: 600; font-size: 14px; cursor: pointer; transition: color 0.3s; transform-style: preserve-3d; white-space: nowrap; text-shadow: 0 0 10px rgba(6,182,212,0.4); }
         .sphere-tag:hover { color: #fff; text-shadow: 0 0 20px #fff; font-size: 16px; z-index: 100; }
 
-        .practice-area { max-width: 800px; width: 100%; z-index: 5; }
+        .practice-area { width: 100%; z-index: 5; }
 
-        .chinese-prompt { font-size: 26px; font-weight: 300; line-height: 1.6; margin-bottom: 30px; color: #fff; text-align: center; }
+        .chinese-prompt { font-size: 24px; font-weight: 300; line-height: 1.6; margin-bottom: 30px; color: #fff; text-align: center; }
 
-        textarea { width: 100%; height: 120px; background: rgba(0,0,0,0.3); border: 1px solid var(--border-glass); border-radius: 12px; color: #fff; font-size: 18px; padding: 20px; margin-bottom: 25px; resize: none; box-sizing: border-box; box-shadow: inset 0 5px 15px rgba(0,0,0,0.5); }
-        textarea:focus { outline: none; border-color: var(--accent-glow); box-shadow: inset 0 5px 15px rgba(0,0,0,0.5), 0 0 15px rgba(6,182,212,0.2); }
+        /* 输入模式切换 Tabs */
+        .input-tabs { display: flex; justify-content: center; gap: 15px; margin-bottom: 20px; }
+        .tab-btn { background: transparent; border: 1px solid var(--border-glass); color: var(--starlight-dim); padding: 8px 20px; border-radius: 20px; font-size: 13px; cursor: pointer; transition: 0.3s; }
+        .tab-btn.active { background: rgba(255,255,255,0.05); border-color: var(--accent-purple); color: #fff; box-shadow: 0 0 10px rgba(139,92,246,0.2); }
 
-        .btn-main { background: #fff; color: #000; border: none; padding: 16px 50px; border-radius: 30px; font-size: 16px; font-weight: 700; cursor: pointer; display: block; margin: 0 auto; box-shadow: 0 0 20px rgba(255,255,255,0.15); transition: 0.3s; }
+        textarea { width: 100%; height: 120px; background: rgba(0,0,0,0.3); border: 1px solid var(--border-glass); border-radius: 12px; color: #fff; font-size: 17px; padding: 20px; resize: none; box-sizing: border-box; box-shadow: inset 0 5px 15px rgba(0,0,0,0.5); transition: 0.3s; }
+        textarea:focus { outline: none; border-color: var(--accent-glow); box-shadow: inset 0 5px 15px rgba(0,0,0,0.5), 0 0 15px rgba(6,182,212,0.15); }
+
+        /* 语音输入区 */
+        .voice-area { width: 100%; height: 120px; background: rgba(0,0,0,0.2); border: 1px dashed var(--border-glass); border-radius: 12px; display: flex; flex-direction: column; justify-content: center; align-items: center; margin-bottom: 25px; }
+        .btn-record { background: rgba(255,255,255,0.05); border: 1px solid var(--starlight-dim); color: #fff; padding: 12px 30px; border-radius: 30px; font-size: 15px; cursor: pointer; transition: 0.3s; display: flex; align-items: center; gap: 10px; }
+        .btn-record:hover { background: rgba(255,255,255,0.1); }
+        .btn-record.recording { background: rgba(239, 68, 68, 0.15); border-color: var(--danger); color: var(--danger); box-shadow: 0 0 15px rgba(239, 68, 68, 0.3); animation: pulse 1.5s infinite; }
+        @keyframes pulse { 0% { box-shadow: 0 0 0 0 rgba(239,68,68,0.4); } 70% { box-shadow: 0 0 0 10px rgba(239,68,68,0); } 100% { box-shadow: 0 0 0 0 rgba(239,68,68,0); } }
+
+        .btn-main { background: #fff; color: #000; border: none; padding: 15px 45px; border-radius: 30px; font-size: 15px; font-weight: 700; cursor: pointer; display: block; margin: 25px auto 0 auto; box-shadow: 0 0 20px rgba(255,255,255,0.15); transition: 0.3s; }
         .btn-main:hover { transform: scale(1.05); box-shadow: 0 0 30px rgba(255,255,255,0.3); }
 
         /* 解析区 */
-        .analysis-view { display: none; margin-top: 30px; animation: slideUp 0.6s ease; }
-        @keyframes slideUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
+        .analysis-view { display: none; margin-top: 20px; width: 100%; animation: slideUp 0.5s ease; }
+        @keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
 
-        .ref-card { background: var(--card-glass); backdrop-filter: blur(20px); border: 1px solid var(--border-glass); padding: 50px; border-radius: 20px; position: relative; box-shadow: 0 20px 50px rgba(0,0,0,0.5); }
+        .ref-card { background: var(--card-glass); backdrop-filter: blur(20px); border: 1px solid var(--border-glass); padding: 50px; border-radius: 20px; position: relative; box-shadow: 0 20px 50px rgba(0,0,0,0.4); }
 
-        .ref-label { font-size: 12px; color: var(--accent-purple); letter-spacing: 3px; margin-bottom: 25px; font-weight: bold; }
+        /* 录音回放区 */
+        .playback-zone { background: rgba(255,255,255,0.03); border-radius: 12px; padding: 15px; margin-bottom: 30px; border: 1px solid var(--border-glass); display: flex; align-items: center; gap: 15px; }
+        .playback-zone audio { flex-grow: 1; height: 35px; outline: none; }
 
-        .english-text { font-family: 'Libre Baskerville', serif; font-size: 26px; line-height: 1.6; color: #fff; margin-bottom: 40px; font-style: italic; }
-
+        .ref-label { font-size: 11px; color: var(--accent-purple); letter-spacing: 3px; margin-bottom: 20px; font-weight: bold; display: block; }
+        .english-text { font-family: 'Libre Baskerville', serif; font-size: 26px; line-height: 1.6; color: #fff; margin-bottom: 35px; font-style: italic; }
         .target-tags { font-size: 14px; color: var(--accent-glow); background: rgba(6,182,212,0.08); border-left: 3px solid var(--accent-glow); padding: 15px 20px; border-radius: 0 8px 8px 0; margin-bottom: 30px; }
 
         .insight-list { list-style: none; padding: 0; }
         .insight-list li { font-size: 15px; color: var(--starlight); margin-bottom: 15px; line-height: 1.6; padding-left: 20px; position: relative; }
         .insight-list li::before { content: '»'; position: absolute; left: 0; color: var(--accent-glow); font-size: 18px; top: -2px; }
-        .insight-list li b { color: #fbbf24; font-weight: bold; } /* 重点词汇高亮为金色 */
+        .insight-list li b { color: #fbbf24; font-weight: bold; } 
 
-        .favorite-btn { position: absolute; top: 40px; right: 40px; cursor: pointer; font-size: 26px; color: rgba(255,255,255,0.15); transition: 0.3s; }
+        .favorite-btn { position: absolute; top: 40px; right: 40px; cursor: pointer; font-size: 24px; color: rgba(255,255,255,0.15); transition: 0.3s; }
         .favorite-btn:hover { color: #fff; transform: scale(1.1); }
         .favorite-btn.active { color: #fbbf24; text-shadow: 0 0 20px rgba(251,191,36,0.6); }
 
         .tool-bar { display: flex; gap: 30px; margin-top: 30px; border-top: 1px solid var(--border-glass); padding-top: 25px; }
-        .tool-link { color: var(--starlight-dim); font-size: 14px; text-decoration: none; cursor: pointer; transition: 0.2s; }
+        .tool-link { color: var(--starlight-dim); font-size: 13px; text-decoration: none; cursor: pointer; transition: 0.2s; }
         .tool-link:hover { color: #fff; }
 
         .btn-next { background: transparent; border: 1px solid var(--accent-glow); color: var(--accent-glow); padding: 14px 40px; border-radius: 30px; cursor: pointer; margin-top: 30px; float: right; font-weight: bold; transition: 0.3s; }
-        .btn-next:hover { background: var(--accent-glow); color: #000; box-shadow: 0 0 20px rgba(6,182,212,0.4); }
+        .btn-next:hover { background: var(--accent-glow); color: #000; box-shadow: 0 0 20px rgba(6,182,212,0.3); }
 
-        /* --- 划线做笔记浮窗 (微信读书风) --- */
-        #highlight-tooltip {
-            display: none; position: absolute; z-index: 1000;
-            background: #fff; color: #000; padding: 10px 20px; border-radius: 8px;
-            font-size: 14px; font-weight: bold; cursor: pointer;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.5);
-            transform: translate(-50%, -100%); margin-top: -15px; transition: 0.2s;
-        }
-        #highlight-tooltip:hover { transform: translate(-50%, -100%) scale(1.05); }
+        /* 划线工具与弹窗保持不变... */
+        #highlight-tooltip { display: none; position: absolute; z-index: 1000; background: #fff; color: #000; padding: 10px 20px; border-radius: 8px; font-size: 13px; font-weight: bold; cursor: pointer; box-shadow: 0 10px 25px rgba(0,0,0,0.5); transform: translate(-50%, -100%); margin-top: -10px; }
         #highlight-tooltip::after { content: ''; position: absolute; bottom: -8px; left: 50%; transform: translateX(-50%); border-width: 8px 8px 0; border-style: solid; border-color: #fff transparent transparent transparent; }
-
-        /* --- 笔记输入 Modal --- */
-        .modal-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.85); backdrop-filter: blur(8px); z-index: 2000; justify-content: center; align-items: center; }
-        .modal-content { background: var(--bg-deep-space); width: 90%; max-width: 600px; border-radius: 20px; border: 1px solid var(--border-glass); overflow: hidden; box-shadow: 0 25px 60px rgba(0,0,0,0.8); }
-        .modal-header { padding: 25px 30px; border-bottom: 1px solid var(--border-glass); display: flex; justify-content: space-between; align-items: center; }
-        .modal-header h3 { margin: 0; color: #fff; font-size: 18px; }
+        .modal-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.85); backdrop-filter: blur(5px); z-index: 2000; justify-content: center; align-items: center; }
+        .modal-content { background: var(--bg-deep-space); width: 90%; max-width: 600px; border-radius: 16px; border: 1px solid var(--border-glass); overflow: hidden; box-shadow: 0 25px 60px rgba(0,0,0,0.8); }
+        .modal-header { padding: 25px; border-bottom: 1px solid var(--border-glass); display: flex; justify-content: space-between; align-items: center; }
+        .modal-header h3 { margin: 0; color: #fff; font-size: 16px; }
         .modal-body { padding: 30px; }
-        .selected-text-quote { border-left: 4px solid var(--accent-purple); padding-left: 15px; margin-bottom: 20px; color: var(--starlight); font-style: italic; font-size: 16px; }
-        #note-input { width: 100%; height: 100px; background: rgba(255,255,255,0.03); border: 1px solid var(--border-glass); border-radius: 10px; color: #fff; padding: 15px; font-size: 15px; resize: none; margin-bottom: 20px; box-sizing: border-box; }
-        .btn-save-note { background: var(--accent-purple); color: #fff; border: none; padding: 12px 30px; border-radius: 8px; font-weight: bold; cursor: pointer; float: right; }
-
-        /* --- 划线语料库列表 Modal --- */
+        .selected-text-quote { border-left: 4px solid var(--accent-purple); padding-left: 15px; margin-bottom: 20px; color: #fff; font-style: italic; font-size: 15px; }
+        #note-input { width: 100%; height: 100px; background: rgba(255,255,255,0.03); border: 1px solid var(--border-glass); border-radius: 8px; color: #fff; padding: 15px; font-size: 14px; resize: none; margin-bottom: 20px; box-sizing: border-box; }
+        .btn-save-note { background: var(--accent-purple); color: #fff; border: none; padding: 12px 25px; border-radius: 6px; font-weight: bold; cursor: pointer; float: right; }
         #library-modal .modal-content { max-width: 800px; max-height: 85vh; display: flex; flex-direction: column; }
         #library-modal .modal-body { overflow-y: auto; }
-        .highlight-item { background: rgba(255,255,255,0.02); border: 1px solid var(--border-glass); padding: 25px; border-radius: 12px; margin-bottom: 20px; position: relative; }
-        .highlight-text { font-family: 'Libre Baskerville', serif; font-size: 20px; color: #fff; margin-bottom: 15px; }
-        .highlight-note { background: rgba(139,92,246,0.1); border-radius: 8px; padding: 12px 15px; font-size: 14px; color: var(--starlight); display: flex; gap: 10px; }
-        .delete-hl { position: absolute; top: 25px; right: 25px; background: none; border: none; color: #ef4444; font-size: 16px; cursor: pointer; opacity: 0.5; }
+        .highlight-item { background: rgba(255,255,255,0.02); border: 1px solid var(--border-glass); padding: 20px; border-radius: 10px; margin-bottom: 20px; position: relative; }
+        .highlight-text { font-family: 'Libre Baskerville', serif; font-size: 18px; color: #fff; margin-bottom: 15px; }
+        .highlight-note { background: rgba(139,92,246,0.1); border-radius: 6px; padding: 12px; font-size: 13px; color: var(--starlight); }
+        .delete-hl { position: absolute; top: 20px; right: 20px; background: none; border: none; color: #ef4444; font-size: 15px; cursor: pointer; opacity: 0.5; }
         .delete-hl:hover { opacity: 1; }
-        
-        .loader { position: fixed; inset: 0; background: #000; display: flex; justify-content: center; align-items: center; z-index: 3000; color: #fff; font-size: 14px; }
+        .loader { position: fixed; inset: 0; background: #000; display: flex; justify-content: center; align-items: center; z-index: 3000; color: #fff; font-size: 13px; }
     </style>
 </head>
 <body>
 
 <div class="stars-bg"></div>
-
-<div id="loader" class="loader">
+<div class="planet-bg"></div> <div id="loader" class="loader">
     <div style="text-align:center;">
         <i class="fas fa-satellite fa-spin fa-2x" style="color:var(--accent-glow); margin-bottom:20px;"></i>
         <div>CALIBRATING COSMIC DATABASE...</div>
@@ -177,7 +187,7 @@
 <div class="sidebar">
     <div class="brand">
         <h1>雅思口语小助手</h1>
-        <p>V6.0 Soul-Cosmic Edition</p>
+        <p>Refining Vocabulary &<br>Grammatical Texture</p>
     </div>
 
     <div class="nav-section">
@@ -194,7 +204,7 @@
         </div>
         
         <button class="btn-random-big" onclick="pickRandom()">
-            <i class="fas fa-dice-d20"></i> 随机抽题挑战
+            <i class="fas fa-dice-d20"></i> 随机抽题
         </button>
     </div>
 
@@ -215,90 +225,83 @@
 
     <div class="nav-section" style="margin-top: auto;">
         <div class="nav-label">My Notebook</div>
-        <button class="btn-ghost" onclick="toggleReviewMode()"><i class="fas fa-star"></i> 整题收藏夹 (直接背诵)</button>
-        <button class="btn-ghost" onclick="openLibraryModal()"><i class="fas fa-highlighter"></i> 划线语料库 (带笔记)</button>
+        <button class="btn-ghost" onclick="toggleReviewMode()"><i class="fas fa-star"></i> 整题背诵夹 (Review)</button>
+        <button class="btn-ghost" onclick="openLibraryModal()"><i class="fas fa-highlighter"></i> 划线语料库 (Notes)</button>
     </div>
 </div>
 
 <div class="main-stage">
-    
-    <div id="sphere-cloud"></div>
-
-    <div class="practice-area" id="main-ui" style="display:none;">
-        <div class="chinese-prompt" id="cn-sentence"></div>
+    <div class="content-wrapper">
         
-        <textarea id="user-input" placeholder="请阅读中文，并在脑中或此处尝试回译..."></textarea>
-        
-        <button class="btn-main" id="check-btn" onclick="showAnswer()">揭晓地道表达</button>
+        <div class="sphere-container" id="sphere-wrapper">
+            <div id="sphere-cloud"></div>
+        </div>
 
-        <div class="analysis-view" id="answer-section">
-            <div class="ref-card">
-                <div class="favorite-btn" id="fav-star" onclick="toggleFavorite()"><i class="fas fa-star"></i></div>
-                <div class="ref-label">NATIVE RE-TRANSLATION</div>
-                <div class="english-text" id="en-reference"></div>
-                <div class="target-tags" id="revealed-focus"></div>
-                <ul class="insight-list" id="points-list"></ul>
-
-                <div class="tool-bar">
-                    <span class="tool-link" onclick="speak('UK')"><i class="fas fa-volume-up"></i> 英音</span>
-                    <span class="tool-link" onclick="speak('US')"><i class="fas fa-volume-up"></i> 美音</span>
-                    <span class="tool-link" onclick="copyText()"><i class="far fa-copy"></i> 复制</span>
-                    <span style="flex-grow:1; text-align:right; font-size:11px; color:var(--starlight-dim);">*在卡片内划词即可记录笔记</span>
+        <div class="practice-area" id="main-ui" style="display:none;">
+            <div class="chinese-prompt" id="cn-sentence"></div>
+            
+            <div id="input-section">
+                <div class="input-tabs">
+                    <button class="tab-btn active" id="tab-text" onclick="switchInputMode('text')"><i class="fas fa-keyboard"></i> 键盘打字</button>
+                    <button class="tab-btn" id="tab-voice" onclick="switchInputMode('voice')"><i class="fas fa-microphone-alt"></i> 语音练习</button>
+                </div>
+                
+                <textarea id="user-input" placeholder="请阅读中文，并在脑中思考或在此试写..."></textarea>
+                
+                <div class="voice-area" id="voice-input" style="display:none;">
+                    <button class="btn-record" id="record-btn" onclick="toggleRecording()">
+                        <i class="fas fa-microphone"></i> <span>点击开始录音</span>
+                    </button>
+                    <div style="font-size:12px; color:var(--starlight-dim); margin-top:15px;" id="record-status">请允许浏览器使用麦克风</div>
                 </div>
             </div>
-            <button class="btn-next" onclick="nextQuestion()">下一题 ➔</button>
+
+            <button class="btn-main" id="check-btn" onclick="showAnswer()">揭晓地道表达</button>
+
+            <div class="analysis-view" id="answer-section">
+                <div class="ref-card">
+                    <div class="favorite-btn" id="fav-star" onclick="toggleFavorite()"><i class="fas fa-star"></i></div>
+                    
+                    <div class="playback-zone" id="playback-zone" style="display:none;">
+                        <span style="font-size:12px; color:var(--starlight-dim);"><i class="fas fa-headphones"></i> 你的作答:</span>
+                        <audio id="audio-player" controls></audio>
+                    </div>
+
+                    <span class="ref-label">NATIVE RE-TRANSLATION</span>
+                    <div class="english-text" id="en-reference"></div>
+                    <div class="target-tags" id="revealed-focus"></div>
+                    <ul class="insight-list" id="points-list"></ul>
+
+                    <div class="tool-bar">
+                        <span class="tool-link" onclick="speak('UK')"><i class="fas fa-volume-up"></i> 英音示范</span>
+                        <span class="tool-link" onclick="speak('US')"><i class="fas fa-volume-up"></i> 美音示范</span>
+                        <span class="tool-link" onclick="copyText()"><i class="far fa-copy"></i> 复制</span>
+                        <span style="flex-grow:1; text-align:right; font-size:11px; color:var(--starlight-dim);">*鼠标选中任意英文即可划线收藏</span>
+                    </div>
+                </div>
+                <button class="btn-next" onclick="nextQuestion()">下一题 ➔</button>
+            </div>
         </div>
     </div>
 </div>
 
-<div id="highlight-tooltip" onclick="openNoteModal()">
-    <i class="fas fa-pen-nib"></i> 划线并记笔记
-</div>
-
-<div class="modal-overlay" id="note-modal">
-    <div class="modal-content">
-        <div class="modal-header">
-            <h3><i class="fas fa-edit" style="color:var(--accent-purple)"></i> 添加语料笔记</h3>
-            <button class="close-modal" onclick="closeModal('note-modal')" style="background:none;border:none;color:#fff;cursor:pointer;"><i class="fas fa-times"></i></button>
-        </div>
-        <div class="modal-body">
-            <div class="selected-text-quote" id="quote-text"></div>
-            <textarea id="note-input" placeholder="写下你的灵感，比如：这个词组可以用在 P2 描述老人..."></textarea>
-            <button class="btn-save-note" onclick="saveHighlightAndNote()">保存收录</button>
-            <div style="clear:both;"></div>
-        </div>
-    </div>
-</div>
-
-<div class="modal-overlay" id="library-modal">
-    <div class="modal-content">
-        <div class="modal-header">
-            <h3><i class="fas fa-book-open" style="color:var(--accent-glow)"></i> 我的私人语料库</h3>
-            <button class="close-modal" onclick="closeModal('library-modal')" style="background:none;border:none;color:#fff;cursor:pointer;"><i class="fas fa-times"></i></button>
-        </div>
-        <div class="modal-body" id="library-list"></div>
-    </div>
-</div>
+<div id="highlight-tooltip" onclick="openNoteModal()"><i class="fas fa-pen-nib"></i> 划线记笔记</div>
+<div class="modal-overlay" id="note-modal"><div class="modal-content"><div class="modal-header"><h3><i class="fas fa-edit" style="color:var(--accent-purple)"></i> 添加语料笔记</h3><button class="close-modal" onclick="closeModal('note-modal')" style="background:none;border:none;color:#fff;cursor:pointer;"><i class="fas fa-times"></i></button></div><div class="modal-body"><div class="selected-text-quote" id="quote-text"></div><textarea id="note-input" placeholder="写下你的灵感..."></textarea><button class="btn-save-note" onclick="saveHighlightAndNote()">保存</button><div style="clear:both;"></div></div></div></div>
+<div class="modal-overlay" id="library-modal"><div class="modal-content"><div class="modal-header"><h3><i class="fas fa-book-open" style="color:var(--accent-glow)"></i> 我的私人语料库</h3><button class="close-modal" onclick="closeModal('library-modal')" style="background:none;border:none;color:#fff;cursor:pointer;"><i class="fas fa-times"></i></button></div><div class="modal-body" id="library-list"></div></div></div>
 
 <script>
-    const files = [
-        'media_sentences.md', 'tech_sentences.md', 'life_sentences.md',
-        'work_sentences.md', 'education_sentences.md', 'travel_sentences.md',
-        'food_sentences.md', 'transport_sentences.md', 'health_sentences.md',
-        'environment_sentences.md', 'government_sentences.md'
-    ];
-
-    let allQuestions = [];
-    let currentQuestions = [];
-    let currentIndex = 0;
-    
-    // 数据持久化
+    const files = ['media_sentences.md', 'tech_sentences.md', 'life_sentences.md', 'work_sentences.md', 'education_sentences.md', 'travel_sentences.md', 'food_sentences.md', 'transport_sentences.md', 'health_sentences.md', 'environment_sentences.md', 'government_sentences.md'];
+    let allQuestions = [], currentQuestions = [], currentIndex = 0;
     let favorites = JSON.parse(localStorage.getItem('ielts_favs') || '[]');
     let highlights = JSON.parse(localStorage.getItem('ielts_hl_notes') || '[]');
-    let practicedIds = JSON.parse(sessionStorage.getItem('ielts_practiced') || '[]'); // 会话级防重
-    
-    let reviewMode = false;
-    let tempSelectedText = "";
+    let practicedIds = JSON.parse(sessionStorage.getItem('ielts_practiced') || '[]');
+    let reviewMode = false, tempSelectedText = "";
+
+    // 录音相关变量
+    let mediaRecorder = null;
+    let audioChunks = [];
+    let audioBlob = null;
+    let isRecording = false;
 
     function generateId(str) { return encodeURIComponent(str).replace(/%/g, '').substring(0, 20); }
 
@@ -309,136 +312,123 @@
                 if (!res.ok) continue;
                 const text = await res.text();
                 const sections = text.split(/##\s+[A-Za-z0-9_]+/).slice(1);
-                
                 sections.forEach(sec => {
                     if (sec.includes('使用的表达覆盖')) return;
                     try {
-                        const cnMatch = sec.match(/\*\*中文\*\*([\s\S]*?)\*\*话题\*\*/);
-                        if (!cnMatch) return;
-                        const cn = cnMatch[1].trim().replace(/^[:：\s]+/, '');
-
-                        const topicMatch = sec.match(/\*\*话题\*\*([\s\S]*?)\*\*练习重点\*\*/);
-                        const topic = topicMatch[1].trim().replace(/^[:：\s]+/, '').replace(/\(.*\)/, "").trim(); 
-                        
-                        const focusMatch = sec.match(/\*\*练习重点\*\*([\s\S]*?)\*\*英文参考/);
-                        const focus = focusMatch[1].trim().replace(/^[:：\s]+/, '');
-
-                        const enMatch = sec.match(/\*\*英文参考\(口语\)\*\*([\s\S]*?)\*\*学习要点\*\*/);
-                        const en = enMatch[1].trim().replace(/^[:：\s]+/, '');
-
-                        const ptsPart = sec.split(/\*\*学习要点\*\*/)[1].split('---')[0].trim();
-                        const points = ptsPart.split('\n').filter(l => l.trim().match(/^\d+\./)).map(l => l.replace(/^\d+\.\s*/, '').trim());
-                        
+                        const cn = sec.match(/\*\*中文\*\*([\s\S]*?)\*\*话题\*\*/)[1].trim().replace(/^[:：\s]+/, '');
+                        const topic = sec.match(/\*\*话题\*\*([\s\S]*?)\*\*练习重点\*\*/)[1].trim().replace(/^[:：\s]+/, '').replace(/\(.*\)/, "").trim(); 
+                        const focus = sec.match(/\*\*练习重点\*\*([\s\S]*?)\*\*英文参考/)[1].trim().replace(/^[:：\s]+/, '');
+                        const en = sec.match(/\*\*英文参考\(口语\)\*\*([\s\S]*?)\*\*学习要点\*\*/)[1].trim().replace(/^[:：\s]+/, '');
+                        const points = sec.split(/\*\*学习要点\*\*/)[1].split('---')[0].trim().split('\n').filter(l => l.trim().match(/^\d+\./)).map(l => l.replace(/^\d+\.\s*/, '').trim());
                         allQuestions.push({ id: generateId(cn), cn, topic, focus, en, points });
                     } catch(e) {}
                 });
             } catch(e) {}
         }
-
         document.getElementById('stat-total').innerText = allQuestions.length;
         updateDailyStats();
-
-        // 提取话题并构建下拉菜单
         const topics = [...new Set(allQuestions.map(q => q.topic))];
         const selector = document.getElementById('topic-selector');
-        topics.forEach(t => {
-            const opt = document.createElement('option');
-            opt.value = t; opt.innerText = t; selector.appendChild(opt);
-        });
-
-        // 启动 3D 星球
+        topics.forEach(t => { const opt = document.createElement('option'); opt.value = t; opt.innerText = t; selector.appendChild(opt); });
         initSphere(topics);
-
         document.getElementById('loader').style.display = 'none';
         document.getElementById('main-ui').style.display = 'block';
         changeTopic();
     }
 
-    // ====== 3D 旋转星球逻辑 ======
+    // 3D 星球
     let sphereX = 0, sphereY = 0;
     function initSphere(topics) {
         const container = document.getElementById('sphere-cloud');
-        const radius = 120;
-        
+        const radius = 110;
         topics.forEach((text, i) => {
             const el = document.createElement('div');
-            el.className = 'sphere-tag';
-            el.innerText = text;
-            
-            // 均匀分布在球面上 (Fibonacci sphere)
+            el.className = 'sphere-tag'; el.innerText = text;
             const phi = Math.acos(-1 + (2 * i) / topics.length);
             const theta = Math.sqrt(topics.length * Math.PI) * phi;
-            
             el.dataset.x = radius * Math.cos(theta) * Math.sin(phi);
             el.dataset.y = radius * Math.sin(theta) * Math.sin(phi);
             el.dataset.z = radius * Math.cos(phi);
-            
-            el.onclick = () => {
-                document.getElementById('topic-selector').value = text;
-                changeTopic();
-            };
+            el.onclick = () => { document.getElementById('topic-selector').value = text; changeTopic(); };
             container.appendChild(el);
         });
-
-        // 旋转动画
         function animate() {
-            sphereX -= 0.003; sphereY += 0.003;
-            const sinX = Math.sin(sphereX), cosX = Math.cos(sphereX);
-            const sinY = Math.sin(sphereY), cosY = Math.cos(sphereY);
-            
+            sphereX -= 0.004; sphereY += 0.002;
+            const sinX = Math.sin(sphereX), cosX = Math.cos(sphereX), sinY = Math.sin(sphereY), cosY = Math.cos(sphereY);
             Array.from(container.children).forEach(el => {
-                let x = parseFloat(el.dataset.x);
-                let y = parseFloat(el.dataset.y);
-                let z = parseFloat(el.dataset.z);
-                
-                // 绕 X 和 Y 轴旋转
+                let x = parseFloat(el.dataset.x), y = parseFloat(el.dataset.y), z = parseFloat(el.dataset.z);
                 let rx1 = x, ry1 = y * cosX - z * sinX, rz1 = y * sinX + z * cosX;
                 let rx2 = rx1 * cosY + rz1 * sinY, ry2 = ry1, rz2 = -rx1 * sinY + rz1 * cosY;
-                
-                // 投影
                 const scale = (radius + rz2) / (radius * 2);
                 el.style.transform = `translate3D(${rx2}px, ${ry2}px, ${rz2}px) scale(${0.5 + scale})`;
-                el.style.opacity = scale + 0.2;
-                el.style.zIndex = Math.round(scale * 100);
+                el.style.opacity = scale + 0.1; el.style.zIndex = Math.round(scale * 100);
             });
             requestAnimationFrame(animate);
         }
         animate();
     }
 
-    // ====== 核心练习逻辑 ======
+    // 输入模式切换
+    function switchInputMode(mode) {
+        document.getElementById('tab-text').className = mode === 'text' ? 'tab-btn active' : 'tab-btn';
+        document.getElementById('tab-voice').className = mode === 'voice' ? 'tab-btn active' : 'tab-btn';
+        document.getElementById('user-input').style.display = mode === 'text' ? 'block' : 'none';
+        document.getElementById('voice-input').style.display = mode === 'voice' ? 'flex' : 'none';
+    }
+
+    // 录音控制
+    async function toggleRecording() {
+        const btn = document.getElementById('record-btn');
+        const status = document.getElementById('record-status');
+        
+        if (isRecording) {
+            mediaRecorder.stop();
+            btn.classList.remove('recording');
+            btn.innerHTML = '<i class="fas fa-redo"></i> <span>重新录音</span>';
+            status.innerText = "录音已完成，点击下方按钮看答案";
+            isRecording = false;
+        } else {
+            try {
+                const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+                mediaRecorder = new MediaRecorder(stream);
+                audioChunks = [];
+                mediaRecorder.ondataavailable = e => { if(e.data.size > 0) audioChunks.push(e.data); };
+                mediaRecorder.onstop = () => {
+                    audioBlob = new Blob(audioChunks, { type: 'audio/webm' });
+                    document.getElementById('audio-player').src = URL.createObjectURL(audioBlob);
+                };
+                mediaRecorder.start();
+                btn.classList.add('recording');
+                btn.innerHTML = '<i class="fas fa-stop"></i> <span>点击结束录音</span>';
+                status.innerText = "录音中...";
+                isRecording = true;
+            } catch (err) {
+                alert("无法访问麦克风，请在浏览器地址栏左侧允许权限。");
+            }
+        }
+    }
+
     function changeTopic() {
         reviewMode = false;
         const t = document.getElementById('topic-selector').value;
         let pool = (t === 'all') ? [...allQuestions] : allQuestions.filter(q => q.topic === t);
-        
-        // 过滤已练
-        if(document.getElementById('filter-practiced').checked) {
-            pool = pool.filter(q => !practicedIds.includes(q.id));
-        }
-
-        // 动态隐藏星球
-        document.getElementById('sphere-cloud').style.display = (t === 'all' && !reviewMode) ? 'block' : 'none';
-
+        if(document.getElementById('filter-practiced').checked) pool = pool.filter(q => !practicedIds.includes(q.id));
         if(pool.length === 0) {
-            alert("太棒了！这个分类下的题目你都已经练完了（或题库为空）。");
+            alert("太棒了！该状态下无新题。");
             document.getElementById('filter-practiced').checked = false;
-            return changeTopic(); // 重置开关重新加载
+            return changeTopic(); 
         }
-
         currentQuestions = pool.sort(() => Math.random() - 0.5);
         currentIndex = 0;
         render();
     }
 
-    // 纯享背诵模式
     function toggleReviewMode() {
-        if (favorites.length === 0) { alert("整题收藏夹是空的哦！在练习时点击答案右上角的⭐即可。"); return; }
+        if (favorites.length === 0) { alert("整题收藏夹为空！"); return; }
         reviewMode = true;
         currentQuestions = allQuestions.filter(q => favorites.includes(q.id));
         currentIndex = 0;
         document.getElementById('topic-selector').value = 'all';
-        document.getElementById('sphere-cloud').style.display = 'none';
         render();
     }
 
@@ -447,13 +437,12 @@
         let pool = [...allQuestions];
         if(document.getElementById('filter-practiced').checked) {
             pool = pool.filter(q => !practicedIds.includes(q.id));
-            if(pool.length === 0) return alert("你已经做完所有题了！");
+            if(pool.length === 0) return alert("全部练完了！");
         }
         currentIndex = Math.floor(Math.random() * pool.length);
         currentQuestions = [pool[currentIndex]];
         currentIndex = 0;
         document.getElementById('topic-selector').value = 'all';
-        document.getElementById('sphere-cloud').style.display = 'none';
         render();
     }
 
@@ -467,38 +456,53 @@
         list.innerHTML = "";
         q.points.forEach(p => {
             const li = document.createElement("li");
-            // 将双星号替换为金色加粗
             li.innerHTML = p.replace(/\*\*(.*?)\*\*/g, '<b>$1</b>');
             list.appendChild(li);
         });
 
-        const star = document.getElementById('fav-star');
-        star.className = favorites.includes(q.id) ? 'favorite-btn active' : 'favorite-btn';
+        document.getElementById('fav-star').className = favorites.includes(q.id) ? 'favorite-btn active' : 'favorite-btn';
 
+        // 重置状态
         document.getElementById("user-input").value = "";
+        audioBlob = null; 
+        document.getElementById('record-btn').innerHTML = '<i class="fas fa-microphone"></i> <span>点击开始录音</span>';
+        document.getElementById('record-btn').classList.remove('recording');
+        document.getElementById('record-status').innerText = "请允许浏览器使用麦克风";
+        document.getElementById("playback-zone").style.display = "none";
 
-        // 如果是复习模式，直接出答案，隐藏输入框
         if(reviewMode) {
-            document.getElementById("user-input").style.display = "none";
+            document.getElementById("input-section").style.display = "none";
             document.getElementById("check-btn").style.display = "none";
             document.getElementById("answer-section").style.display = "block";
+            document.getElementById('sphere-wrapper').style.display = 'none'; // 背诵模式隐藏星球
         } else {
-            document.getElementById("user-input").style.display = "block";
+            document.getElementById("input-section").style.display = "block";
             document.getElementById("check-btn").style.display = "block";
             document.getElementById("answer-section").style.display = "none";
+            document.getElementById('sphere-wrapper').style.display = 'flex'; // 提问阶段展示星球
         }
     }
 
     function showAnswer() {
         const q = currentQuestions[currentIndex];
-        // 记录已练习
         if(!practicedIds.includes(q.id)) {
             practicedIds.push(q.id);
             sessionStorage.setItem('ielts_practiced', JSON.stringify(practicedIds));
             incrementDaily();
         }
+        
+        // 隐藏星球，显示解析
+        document.getElementById('sphere-wrapper').style.display = 'none'; 
         document.getElementById("answer-section").style.display = "block";
         document.getElementById("check-btn").style.display = "none";
+        
+        // 判断是否有录音回放
+        if(audioBlob) {
+            document.getElementById("playback-zone").style.display = "flex";
+        }
+        
+        // 如果正在录音但用户点了看答案，强制停止
+        if(isRecording) toggleRecording();
     }
 
     function nextQuestion() {
@@ -523,19 +527,14 @@
         localStorage.setItem('ielts_favs', JSON.stringify(favorites));
     }
 
-    // ====== 微信读书风：划线做笔记功能 ======
+    // 划线功能
     document.addEventListener('mouseup', function(e) {
-        // 如果点击的是弹出框本身或其内部元素，不处理
         if(e.target.closest('#highlight-tooltip') || e.target.closest('.modal-overlay')) return;
-
         const sel = window.getSelection();
         const tooltip = document.getElementById('highlight-tooltip');
-
         if (!sel.isCollapsed && sel.toString().trim().length > 0) {
             const range = sel.getRangeAt(0);
             const answerSection = document.getElementById('answer-section');
-
-            // 允许在整个解析卡片区划线
             if (answerSection.contains(range.commonAncestorContainer) || answerSection === range.commonAncestorContainer) {
                 tempSelectedText = sel.toString().trim();
                 const rect = range.getBoundingClientRect();
@@ -558,72 +557,47 @@
 
     function saveHighlightAndNote() {
         const note = document.getElementById('note-input').value.trim();
-        // 允许只划线不写笔记
         highlights.unshift({ text: tempSelectedText, note: note || "（无笔记）", date: new Date().toLocaleDateString() });
         localStorage.setItem('ielts_hl_notes', JSON.stringify(highlights));
         closeModal('note-modal');
-        // 可选：给个小提示
     }
 
     function openLibraryModal() {
         const container = document.getElementById('library-list');
         container.innerHTML = '';
         if(highlights.length === 0) {
-            container.innerHTML = '<div style="text-align:center; color:var(--starlight-dim); padding:40px;">暂无笔记。在答题卡区域选中文本即可划线记录。</div>';
+            container.innerHTML = '<div style="text-align:center; color:var(--starlight-dim); padding:40px;">暂无划线收藏</div>';
         } else {
             highlights.forEach((item, idx) => {
                 container.innerHTML += `
                     <div class="highlight-item">
                         <div class="highlight-text">${item.text}</div>
                         <div class="highlight-note"><i class="fas fa-pen-nib"></i> ${item.note}</div>
-                        <div style="font-size:10px; color:var(--starlight-dim); margin-top:10px;">${item.date}</div>
                         <button class="delete-hl" onclick="deleteNote(${idx})" title="删除"><i class="fas fa-trash"></i></button>
-                    </div>
-                `;
+                    </div>`;
             });
         }
         document.getElementById('library-modal').style.display = 'flex';
     }
 
-    function deleteNote(index) {
-        highlights.splice(index, 1);
-        localStorage.setItem('ielts_hl_notes', JSON.stringify(highlights));
-        openLibraryModal(); // 刷新列表
-    }
-
+    function deleteNote(index) { highlights.splice(index, 1); localStorage.setItem('ielts_hl_notes', JSON.stringify(highlights)); openLibraryModal(); }
     function closeModal(id) { document.getElementById(id).style.display = 'none'; }
-
-    // ==================================
-
     function updateDailyStats() {
         const today = new Date().toLocaleDateString();
-        if (localStorage.getItem('ielts_date') !== today) {
-            localStorage.setItem('ielts_date', today);
-            localStorage.setItem('ielts_count', '0');
-        }
+        if (localStorage.getItem('ielts_date') !== today) { localStorage.setItem('ielts_date', today); localStorage.setItem('ielts_count', '0'); }
         document.getElementById('stat-today').innerText = localStorage.getItem('ielts_count');
     }
-
     function incrementDaily() {
-        let count = parseInt(localStorage.getItem('ielts_count') || '0');
-        count++;
-        localStorage.setItem('ielts_count', count.toString());
-        document.getElementById('stat-today').innerText = count;
+        let count = parseInt(localStorage.getItem('ielts_count') || '0'); count++;
+        localStorage.setItem('ielts_count', count.toString()); document.getElementById('stat-today').innerText = count;
     }
-
     function speak(accent) {
-        if (!('speechSynthesis' in window)) { alert("浏览器不支持语音"); return; }
+        if (!('speechSynthesis' in window)) return;
         window.speechSynthesis.cancel();
         const msg = new SpeechSynthesisUtterance(document.getElementById("en-reference").innerText);
-        msg.lang = accent === 'UK' ? 'en-GB' : 'en-US';
-        msg.rate = 0.85;
-        window.speechSynthesis.speak(msg);
+        msg.lang = accent === 'UK' ? 'en-GB' : 'en-US'; msg.rate = 0.85; window.speechSynthesis.speak(msg);
     }
-
-    function copyText() {
-        navigator.clipboard.writeText(document.getElementById("en-reference").innerText);
-        alert("整段语料已复制");
-    }
+    function copyText() { navigator.clipboard.writeText(document.getElementById("en-reference").innerText); alert("已复制"); }
 
     window.onload = init;
 </script>
